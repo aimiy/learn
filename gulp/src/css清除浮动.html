@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <div class="parent">
+        <div class="son son1"></div>
+        <div class="son son2"></div>
+        <!-- <div style="clear: both;"></div> -->
+    </div>
+</body>
+<style>
+    .parent {
+        background: blue;
+        /* overflow: hidden; */
+        overflow: auto;
+    }
+
+    /* .parent::after {
+        clear: both;
+        zoom: 1;
+        display: block;
+        content: "";
+    } */
+
+    .son {
+        display: inline-block;
+        margin: 10px;
+        height: 100px;
+        width: 100px;
+        background: red;
+    }
+
+    .son1 {
+        float: left;
+    }
+
+    .son2 {
+        float: right;
+    }
+</style>
+
+</html>
