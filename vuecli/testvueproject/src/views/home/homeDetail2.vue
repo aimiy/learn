@@ -1,16 +1,16 @@
 <template>
-  <div>detail</div>
+  <div>detail2</div>
 </template>
 
 <script>
 export default {
-    name:"homeDetail",
+    name:"homeDetail2",
   data() {
     return {};
   },
   methods: {
     getList() {
-      console.log("发送请求");
+      console.log("发送请求2");
     }
   },
   mounted() {
@@ -18,5 +18,6 @@ export default {
   }
 };
 </script>
+
 <style>
 </style>
