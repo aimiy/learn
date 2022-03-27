@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kelihua</title>
+</head>
+
+<body>
+    <script>
+        // func 柯里化函数
+        function curry(func) {
+            return function curriedFunc(...args) {
+                if (args.length < func.length) {
+                    return function () {
+                        return curriedFunc(...args.concat(Array.from(arguments))) //Array.from() 方法从一个类似数组或可迭代对象创建一个新的，浅拷贝的数组实例。arguments是一个伪数组
+                    }
+                }
+                return func(...args)
+            }
+        }
+        const match = curry(function (reg, str) {
+            return str.match(reg)
+        });
+        const haveSpace = match(/\s+/g);
+        const haveNumber = match(/\d+/g);
+        console.log(haveSpace)
+
+        console.log(haveSpace("hello world"))
+
+        const filter = curry(function (func, array) {
+            return array.filter(func)
+        })
+        const findSpace = filter(haveSpace)
+        console.log(findSpace(["a b", "a_b"]))
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vuesrc</title>
+</head>
+
+<body>
+</body>
+
+<script>
+    // 一些数据是不展示的，不会触发视图更新
+    // 一些数据关联到两个vue实例，只更新一个不对。所以实行依赖收集
+
+    function defineReactive(obj, key, val) {
+        /* 一个Dep类对象 */
+        const dep = new Dep();
+
+        Object.defineProperty(obj, key, {
+            enumerable: true,       /* 属性可枚举 */
+            configurable: true,     /* 属性可被修改或删除 */
+            get: function reactiveGetter() {
+                /* 将Dep.target（即当前的Watcher对象存入dep的subs中） */
+                dep.addSub(Dep.target);
+                return val;
+            },
+            set: function reactiveSetter(newVal) {
+                if (newVal === val) return;
+                /* 在set的时候触发dep的notify来通知所有的Watcher对象更新视图 */
+                dep.notify(newVal);
+            }
+        });
+    }
+    // 观察者，将vue中的data变为响应式
+    function observer(value) {
+        if (!value || (typeof value !== 'object')) {
+            return;
+        }
+        Object.keys(value).forEach((key) => {
+            defineReactive(value, key, value[key]);
+        });
+    }
+    // 每一个vue都对应一个watcher，因此也对应一个Dep.target
+    class Vue {
+        /* Vue构造类 */
+        constructor(options) {
+            this._data = options.data;
+            observer(this._data);
+            /* 新建一个Watcher观察者对象，这时候Dep.target会指向这个Watcher对象 */
+            new Watcher();
+            /* 在这里模拟render的过程，为了触发test属性的get函数 */
+            console.log('render~', this._data.text1);
+
+        }
+    }
+
+    class Dep {
+        constructor() {
+            /* 用来存放Watcher对象的数组 */
+            this.subs = [];
+        }
+
+        /* 在subs中添加一个Watcher对象 */
+        addSub(sub) {
+            this.subs.push(sub);
+        }
+
+        /* 通知所有Watcher对象更新视图 */
+        notify(newVal) {
+            this.subs.forEach((sub) => {
+                console.log(newVal)
+                sub.update(sub);
+            })
+        }
+    }
+    class Watcher {
+        constructor() {
+            /* 在new一个Watcher对象时将该Watcher对象赋值给Dep.target，在get中会用到 */
+            Dep.target = this;
+        }
+
+        /* 更新视图的方法 */
+        update() {
+            console.log("视图更新啦～");
+        }
+    }
+
+    Dep.target = null;
+
+    let globalObj = {
+        text1: 'text1'
+    };
+
+    let o1 = new Vue({
+        template:
+            `<div>
+            <span>{{text1}}</span> 
+        <div>`,
+        data: globalObj
+    });
+
+    let o2 = new Vue({
+        template:
+            `<div>
+            <span>{{text1}}</span> 
+        <div>`,
+        data: globalObj
+    });
+
+    globalObj.text1 = 'hello,text1';
+    // console.log(o1._data.text1)
+    // console.log(o2._data.text1)
+</script>
+
+</html>

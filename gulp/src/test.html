@@ -1,14 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title></title>
 </head>
+
 <body>
-    
+
 </body>
 <script>
-    var a = '{"app_id":"10000000000000002156","sign_type":"RSA2","charset":"UTF-8","format":"json","ca":"","app_auth_token":null,"msg_id":"msgid","timestamp":"2018-05-17 18:00:20","encrypt_type":"AES","biz_content":" YKakI\/lDr4KIVUyviAV59g5nv\/vA058KGt8QiYeOa1l8Dza6z2QUr6z6IHAehkHBYDVkmCVORLfHdg4kMt3VLU3oBeIXinEvJ7m0gkNjMtcmV1X\/bxzP\/6BZJPOJlXdHC3ikHzZuYVPO6ZjQdmV5r\/77kIMg7ymJHuAf2UIEGaWOC AwlkZCV4kEmcKtCYadR1GOGsNNYLmbLSC4wxclxwRFb wIglfl38CRqaoudZG7EKz5utLH1QVzsA0yTvuZ2LjTB0kcgFCzbDRGsG0drg\/AkcLfweZAZcc3sxbrEEkM\/EYvAmtOPgEm2tNqo5Fa FTwfrGi7iDHwHz9DSmIEkszxF5uPhaeXNDCSCG73\/2SzScLZzNUIK1WdiK\/cUOr djTADGPAB5EjxzOHTEenYvDsqhOO3ZjviMHKP05WfdQQU2yquAQNcSZsCwS7RTU6wPhSaaDxgKNEcf0vlsZcGJ2zpBGw3eQyx0wEZ5oV6PSkDd7ypL203IKVbtvhtJ","sign":"fS6XIaTa0v3TtNZWa8TMK1hQH2Yb 0XbfPzA5sTfShEZL42l44g WEpv0\/edDin8CMcccOPO\/FTMGG63T5AXt9TCmEaz\/XBO8 aXaAxQREiZhehKMyY5jhSGnlDUV88BPcxwp0\/17pvImqRq2fRLWD8Qmq8UouiXgrLo72p7CJ4"}';
-    console.log(JSON.parse(a))
+    let blob = new Blob([JSON.stringify(13035121060, null, 2)]);
+    console.log(blob)
+    // let text = await (new Response(blob)).text();
+    // console.log(text)
+
+    let reader = new FileReader();
+    reader.addEventListener("loadend", function (evt) {
+        // reader.result 包含被转化为类型数组 typed array 的 blob
+        console.log(evt.target.result);
+    });
+    reader.readAsText(blob);
+
+    var aFileParts = ['<a id="a"><b id="b">hey!</b></a>']; // 一个包含DOMString的数组
+    var oMyBlob = new Blob(aFileParts, { type: 'text/html' }); // 得到 blob
+    console.log(oMyBlob)
+
+    this.$axios({
+        method: "post",
+        url: url,
+        headers: {
+            "Content-Type": "application/json;application/octet-stream"
+        },
+        responseType: "blob",
+        data: data
+    }).then(res => {
+        let url = window.URL.createObjectURL(new Blob([res.data]));
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", "XXX.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    });
+
 </script>
+
 </html>

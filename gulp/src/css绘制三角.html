@@ -4,18 +4,73 @@
     <meta charset="UTF-8">
     <title></title>
     <style>
-        .three{
-            border:20px solid transparent;
-            border-bottom-color: #000;
+        .all{
             height: 0;
             width: 0;
+            border-width: 20px 20px 20px 20px;
+            border-style: solid;
+            border-color: orange blue red green;
+        }
+        .one{
+            height: 0;
+            width: 0;
+            border:20px solid transparent;
+            border-top-width: 0;
+            border-bottom-color: #03a9f4;
+        }
+        .two{
+            position: relative;
+            height: 0;
+            width: 0;
+            border-width: 0px 200px 200px;
+            border-style: solid;
+            border-color: transparent transparent red;
+        }
+        .two::after{
+            position: absolute;
+            left: -180px;
+            top: 12px;
+            border-width: 0px 180px 180px;
+            border-style: solid;
+            border-color: transparent transparent orange;
+            content: "";
+        }
+        .arrow{
+            position: relative;
+            height: 0;
+            width: 0;
+            border-width: 0px 200px 200px;
+            border-style: solid;
+            border-color: transparent transparent red;
+        }
+        .arrow::after{
+            position: absolute;
+            left: -180px;
+            top: 20px;
+            border-width: 0px 180px 180px;
+            border-style: solid;
+            border-color: transparent transparent white;
+            content: "";
+        }
+        .three{
+            height: 0;
+            width: 0;
+            border-width: 0px 0px 20px 20px;
+            border-style: solid;
+            border-color: transparent transparent #03a9f4 transparent;
         }
     </style>
 </head>
 <body>
-    <!-- <div class="three"></div> -->
-
-    <div class="outer">外部1<div class="inner">内部</div>外部2</div>
-
+    所有border都存在
+    <div class="all"></div>
+    border实现三角形
+    <div class="one"></div>
+    带边框的三角形
+    <div class="two"></div>
+    空箭头
+    <div class="arrow"></div>
+    直角三角形
+    <div class="three"></div>
 </body>
 </html>

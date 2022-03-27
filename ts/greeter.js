@@ -59,11 +59,11 @@ function inifiniteLoop() {
 // object非原始类型
 // object.create
 // declare function create1(o: object | null): void;
-function create1(o) {
+function create(o) {
     console.log(o);
 }
-create1({ prop: 0 }); // OK
-create1(null); // OK
+create({ prop: 0 }); // OK
+create(null); // OK
 // 以下错误
 // create(o:42)
 // create(o:'string')

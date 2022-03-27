@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>parse</title>
+</head>
+
+<body>
+    <!-- <div :class="c" class="demo" v-if="isShow">
+        <span v-for="item in sz">{{item}}</span>
+    </div> -->
+    <script>
+
+
+
+        const ncname = '[a-zA-Z_][\\w\\-\\.]*'; // 标签名
+        const singleAttrIdentifier = /([^\s"'<>/=]+)/
+        const singleAttrAssign = /(?:=)/
+        const singleAttrValues = [
+            /"([^"]*)"+/.source,
+            /'([^']*)'+/.source,
+            /([^\s"'=<>`]+)/.source
+        ]
+        const attribute = new RegExp(
+            '^\\s*' + singleAttrIdentifier.source +
+            '(?:\\s*(' + singleAttrAssign.source + ')' +
+            '\\s*(?:' + singleAttrValues.join('|') + '))?'
+        )
+
+        const qnameCapture = '((?:' + ncname + '\\:)?' + ncname + ')'
+        const startTagOpen = new RegExp('^<' + qnameCapture) // 标签头
+        const startTagClose = /^\s*(\/?)>/ // 开始标签尾
+
+        const endTag = new RegExp('^<\\/' + qnameCapture + '[^>]*>') // 结束标签
+
+        const defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g
+
+        const forAliasRE = /(.*?)\s+(?:in|of)\s+(.*)/
+
+        // makeAttrsMap 是将 attrs 转换成map格式的一个方法
+        function makeAttrsMap(attrs) {
+            const map = {}
+            for (let i = 0, l = attrs.length; i < l; i++) {
+                map[attrs[i].name] = attrs[i].value;
+            }
+            return map
+        }
+
+
+        let index = 0
+        function advance(n) {
+            index += n
+            html = html.substring(n)
+        }
+
+
+        let currentParent = null
+        let root = null
+        let stack = []
+        function parseHTML() {
+            debugger
+            while (html) {
+                let textEnd = html.indexOf('<');
+                if (textEnd === 0) {
+                    let endTagMatch = html.match(endTag)
+                    if (endTagMatch) {
+                        advance(endTagMatch[0].length);
+                        parseEndTag(endTagMatch[1]);
+                        continue;
+                    }
+                    if (html.match(startTagOpen)) {
+                        const startTagMatch = parseStartTag();
+                        const element = {
+                            type: 1,
+                            tag: startTagMatch.tagName,
+                            lowerCasedTag: startTagMatch.tagName.toLowerCase(),
+                            attrsList: startTagMatch.attrs,
+                            attrsMap: makeAttrsMap(startTagMatch.attrs),
+                            parent: currentParent,
+                            children: []
+                        }
+
+                        processIf(element);
+                        processFor(element);
+
+                        if (!root) {
+                            root = element
+                        }
+
+                        if (currentParent) {
+                            currentParent.children.push(element);
+                        }
+
+                        stack.push(element);
+                        currentParent = element;
+                        continue;
+                    }
+                } else {
+                    text = html.substring(0, textEnd)
+                    advance(textEnd)
+                    let expression;
+                    if (expression = parseText(text)) {
+                        currentParent.children.push({
+                            type: 2,
+                            text,
+                            expression
+                        });
+                    } else {
+                        currentParent.children.push({
+                            type: 3,
+                            text,
+                        });
+                    }
+                    continue;
+                }
+            }
+        }
+        function parseStartTag() {
+            const start = html.match(startTagOpen);
+            // console.log(start)
+            if (start) {
+                const match = {
+                    tagName: start[1],
+                    attrs: [],
+                    start: index
+                }
+                advance(start[0].length);
+
+                let end, attr
+                while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
+                    console.log(attr)
+                    advance(attr[0].length)
+                    match.attrs.push({
+                        name: attr[1],
+                        value: attr[3]
+                    });
+                }
+                if (end) {
+                    console.log(end)
+                    match.unarySlash = end[1];
+                    advance(end[0].length);
+                    match.end = index;
+                    return match
+                }
+            }
+        }
+        // 自闭合的标签，如“<br />”，或者是写了“<span>”但是没有加上“< /span>”的情况，这时候就要找到 stack 中的第二个位置才能找到同名标签
+        function parseEndTag(tagName) {
+            let pos;
+            for (pos = stack.length - 1; pos >= 0; pos--) {
+                if (stack[pos].lowerCasedTag === tagName.toLowerCase()) {
+                    break;
+                }
+            }
+
+            if (pos >= 0) {
+                stack.length = pos;
+                currentParent = stack[pos];
+            }
+        }
+        // 使用一个 tokens数组来存放解析结果，通过 defaultTagRE来循环匹配该文本，如果是普通文本直接push到 tokens数组中去，如果是表达式（{{item}}），则转化成“_s(${exp})”的形式
+        function parseText(text) {
+            if (!defaultTagRE.test(text)) return;
+
+            const tokens = [];
+            let lastIndex = defaultTagRE.lastIndex = 0
+            let match, index
+            while ((match = defaultTagRE.exec(text))) {
+                index = match.index
+
+                if (index > lastIndex) {
+                    tokens.push(JSON.stringify(text.slice(lastIndex, index)))
+                }
+
+                const exp = match[1].trim()
+                tokens.push(`_s(${exp})`)
+                lastIndex = index + match[0].length
+            }
+
+            if (lastIndex < text.length) {
+                tokens.push(JSON.stringify(text.slice(lastIndex)))
+            }
+            return tokens.join('+');
+        }
+
+        function getAndRemoveAttr(el, name) {
+            let val
+            if ((val = el.attrsMap[name]) != null) {
+                const list = el.attrsList
+                for (let i = 0, l = list.length; i < l; i++) {
+                    if (list[i].name === name) {
+                        list.splice(i, 1)
+                        break
+                    }
+                }
+            }
+            return val
+        }
+        function processFor(el) {
+            let exp;
+            if ((exp = getAndRemoveAttr(el, 'v-for'))) {
+                const inMatch = exp.match(forAliasRE);
+                el.for = inMatch[2].trim();
+                el.alias = inMatch[1].trim();
+            }
+        }
+
+        function processIf(el) {
+            const exp = getAndRemoveAttr(el, 'v-if');
+            if (exp) {
+                el.if = exp;
+                if (!el.ifConditions) {
+                    el.ifConditions = [];
+                }
+                el.ifConditions.push({
+                    exp: exp,
+                    block: el
+                });
+            }
+        }
+
+        var html = '<div :class="c" class="demo" v-if="isShow"><span v-for="item in sz">{{item}}</span></div>';
+        parseHTML();
+    </script>
+</body>
+
+</html>

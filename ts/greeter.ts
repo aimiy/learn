@@ -91,7 +91,7 @@ create({ prop: 0 }); // OK
 create(null); // OK
 
 // 以下错误
-create(o:42)
+// create(o:42)
 // create(o:'string')
 // create(o:false)
 // create(o:undefined)
