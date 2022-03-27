@@ -126,18 +126,61 @@
         };
     </script> -->
     <h1>236 二叉树的最近公共祖先 二叉树的最近公共祖先</h1>20200312
+    <!-- <script>
+        var lowestCommonAncestor = function (root, p, q) {
+            if (root == null || root == p || root == q) return root;
+            console.log(root)
+            let left = lowestCommonAncestor(root.left, p, q);
+            let right = lowestCommonAncestor(root.right, p, q);
+            return left == null ? right : right == null ? left : root;
+
+            // if (left !== null) {
+            //     if (right !== null) {
+            //         return root;
+            //     } else {
+            //         return left;
+            //     }
+            // } else {
+            //     return right;
+            // }
+        }; 
+    </script> -->
+    <h1>108将有序数组转换为二叉搜索树</h1>20200312
+    <!-- <script>
+        function TreeNode(val) {
+            this.val = val;
+            this.left = this.right = null;
+        }
+        var sortedArrayToBST = function (nums) {
+            return toTreenode(nums, 0, nums.length - 1)
+        };
+        function toTreenode(nums, start, end) {
+            if(start > end) return null;
+            let m = parseInt((start + end)/2);
+            let root = new TreeNode(nums[m]);
+            root.left = toTreenode(nums,start,m-1);
+            root.right = toTreenode(nums,m+1,end);
+            console.log(root)
+            return root;
+        }
+        console.log(sortedArrayToBST([-10, -3, 0, 5, 9]))
+    </script> -->
+    <h1 style="color: tomato;">109有序链表转换二叉搜索树</h1>无单链表基础，搁置20200313
     <script>
+        function TreeNode(val) {
+            this.val = val;
+            this.left = this.right = null;
+        }
+        function ListNode(val) {
+            this.val = val;
+            this.next = null;
+        }
+        var sortedListToBST = function (head) {
+
+        };
 
     </script>
-    <h1>108</h1>20200312
-    <script>
-
-    </script>
-    <h1>109</h1>20200313
-    <script>
-
-    </script>
-    <h1>653</h1>20200313
+    <h1>653两数之和 IV - 输入 BST</h1>20200313
     <script>
 
     </script>
