@@ -1,6 +1,5 @@
 <template>
   <div>
-    <img alt="Vue logo" src="./assets/logo.png">
     <h1>{{count}}</h1>
     <h1>{{double}}</h1>
     <h1 v-if="!loaded">loading!...</h1>
@@ -8,10 +7,12 @@
     <button @click="increase">👍+1</button><br>
     <button @click="addGreetings">addGreetings</button>
     <h1>x:{{x}}，y:{{y}}</h1>
+    <Modal></Modal>
   </div>
 </template>
 
 <script lang="ts">
+import Modal from "./components/Modal.vue";
 import {
   computed,
   defineComponent,
@@ -91,7 +92,7 @@ export default defineComponent({
       x,
       y,
       loaded,
-      result
+      result,
     };
     // const data: DataProps = reactive({
     //   count: 0,
@@ -115,7 +116,7 @@ export default defineComponent({
     //   ...refData,
     // };
   },
-  components: {},
+  components: { Modal },
 });
 </script>
 
