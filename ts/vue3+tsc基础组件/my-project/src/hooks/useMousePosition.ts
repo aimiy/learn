@@ -26,3 +26,15 @@ function useMousePosition() {
 
 export default useMousePosition
 
+// const x = ref(0);
+// const y = ref(0);
+// const updateClick = (e: MouseEvent) => {
+//   x.value = e.pageX;
+//   y.value = e.pageY;
+// };
+// onMounted(() => {
+//   document.addEventListener("click", updateClick);
+// });
+// onBeforeUnmount(() => {
+//   document.removeEventListener("click",updateClick)
+// })

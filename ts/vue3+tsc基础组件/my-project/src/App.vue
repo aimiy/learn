@@ -3,11 +3,12 @@
     <h1>{{count}}</h1>
     <h1>{{double}}</h1>
     <h1 v-if="!loaded">loading!...</h1>
-    <img v-if="loaded" :src="result[0].url" alt="图片">
+    <img v-if="loaded" :src="result[0].url" alt="图片"><br>
     <button @click="increase">👍+1</button><br>
+    <h1>{{greetings}}</h1>
     <button @click="addGreetings">addGreetings</button>
     <h1>x:{{x}}，y:{{y}}</h1>
-    <Modal></Modal>
+    <Modal @close-modal="closeModal" :visible="visible"></Modal>
   </div>
 </template>
 
@@ -44,77 +45,79 @@ interface CatResult {
 export default defineComponent({
   name: "App",
   setup() {
-    const count = ref(0);
-    const double = computed(() => count.value * 2);
-    const increase = () => {
-      count.value++;
-    };
-
-    const greetings = ref("");
-    watch(greetings, (newValue, oldValue) => {
-      console.log("old", oldValue);
-      console.log("new", newValue);
-      document.title = greetings.value;
-    });
-    const addGreetings = () => {
-      greetings.value += "hello!";
-    };
-
-    // const x = ref(0);
-    // const y = ref(0);
-    // const updateClick = (e: MouseEvent) => {
-    //   x.value = e.pageX;
-    //   y.value = e.pageY;
+    // 增加功能
+    // const count = ref(0);
+    // const double = computed(() => count.value * 2);
+    // const increase = () => {
+    //   count.value++;
     // };
-    // onMounted(() => {
-    //   document.addEventListener("click", updateClick);
-    // });
-    // onBeforeUnmount(() => {
-    //   document.removeEventListener("click",updateClick)
-    // })
 
+    // 字符串拼接，watch
+    // const greetings = ref("");
+    // watch(greetings, (newValue, oldValue) => {
+    //   console.log("old", oldValue);
+    //   console.log("new", newValue);
+    //   document.title = greetings.value;
+    // });
+    // const addGreetings = () => {
+    //   greetings.value += "hello!";
+    // };
+
+    // hook改造，鼠标位置
     const { x, y } = useMousePosition();
+
+    // hook，接口
     // const { loaded, result } = useURLLoader<DogResult>(
     //   "https://dog.ceo/api/breeds/image/random"
     // );
     // 响应结果的泛型改造，为了在后续使用结果值时可以直接识别到返回值结构
-
     // 数组的部分
     const { loaded, result } = useURLLoader<CatResult[]>(
       "https://api.thecatapi.com/v1/images/search?limit=1"
     );
     // result.value[0].url
-    return {
-      count,
-      double,
-      increase,
-      addGreetings,
-      x,
-      y,
-      loaded,
-      result,
+    
+
+    // 关闭弹窗
+    const closeModal = () => {
+      console.log("关闭弹窗");
     };
-    // const data: DataProps = reactive({
-    //   count: 0,
-    //   greetings: "",
-    //   increase: () => {
-    //     data.count++;
-    //   },
-    //   addGreetings: () => {
-    //     greetings.value += "hello!";
-    //   },
-    //   double: computed(() => data.count * 2),
-    // });
-    // const greetings = ref("");
-    // const refData = toRefs(data);
-    // watch([greetings, data], (newValue, oldValue) => {
-    //   console.log("old", oldValue);
-    //   console.log("new", newValue);
-    //   document.title = greetings.value + data.count;
-    // });
+    const visible = ref(false);
     // return {
-    //   ...refData,
+    //   count,
+    //   double,
+    //   increase,
+    //   greetings,
+    //   addGreetings,
+    //   x,
+    //   y,
+    //   loaded,
+    //   result,
+    //   closeModal,
+    //   visible,
     // };
+
+    const data: DataProps = reactive({
+      count: 0,
+      double: computed(() => data.count * 2),
+      increase: () => {
+        data.count++;
+      },
+      greetings: "",
+      addGreetings: () => {
+        greetings.value += "hello!";
+      },
+    });
+    const greetings = ref("");
+    const refData = toRefs(data);
+    watch([greetings, data], (newValue, oldValue) => {
+      console.log("old", oldValue);
+      console.log("new", newValue);
+      document.title = greetings.value + data.count;
+    });
+    return {
+      ...refData,
+    };
   },
   components: { Modal },
 });
