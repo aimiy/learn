@@ -10,6 +10,7 @@
     <h1>x:{{x}}，y:{{y}}</h1>
     <Modal @close-modal="closeModal" :visible="visible"></Modal>
     <button @click="openModal">openModal</button>
+    <div v-if="hPress">h被按下</div>
   </div>
 </template>
 
@@ -29,6 +30,7 @@ import {
 } from "vue";
 import useMousePosition from "./hooks/useMousePosition";
 import useURLLoader from "./hooks/useURLLoader";
+import useKeyPress from "./hooks/useKeyPress";
 interface DataProps {
   count: number;
   double: number;
@@ -109,13 +111,14 @@ export default defineComponent({
         data.greetings += "hello"; // 这个才是data里面的
       },
       // 5关闭弹窗
-        visible: false,
-      openModal:() => {
+      visible: false,
+      openModal: () => {
         data.visible = true;
       },
       closeModal: () => {
         data.visible = false;
       },
+      hPress: useKeyPress("h"),
     });
     const greetings = ref(""); // 外部的greeting
     watch([greetings, data], (newValue, oldValue) => {
@@ -127,8 +130,9 @@ export default defineComponent({
     // 6 TODO: suspense
     // 7 TODO: onErrorCaptured抓捕组件里面的错误
     onErrorCaptured((error) => {
-      console.log(error)
-    })
+      console.log(error);
+    });
+    // 8 TODO 按键被按下
     return {
       ...refData,
       x,
