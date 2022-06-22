@@ -9,6 +9,7 @@
     <button @click="addGreetings">addGreetings</button>
     <h1>x:{{x}}，y:{{y}}</h1>
     <Modal @close-modal="closeModal" :visible="visible"></Modal>
+    <button @click="openModal">openModal</button>
   </div>
 </template>
 
@@ -31,6 +32,8 @@ interface DataProps {
   count: number;
   double: number;
   increase: () => void;
+  greetings: string;
+  visible: boolean;
 }
 interface DogResult {
   status: "success" | "failed";
@@ -45,14 +48,14 @@ interface CatResult {
 export default defineComponent({
   name: "App",
   setup() {
-    // 增加功能
+    // 1增加
     // const count = ref(0);
     // const double = computed(() => count.value * 2);
     // const increase = () => {
     //   count.value++;
     // };
 
-    // 字符串拼接，watch
+    // 2字符串拼接，watch
     // const greetings = ref("");
     // watch(greetings, (newValue, oldValue) => {
     //   console.log("old", oldValue);
@@ -63,10 +66,10 @@ export default defineComponent({
     //   greetings.value += "hello!";
     // };
 
-    // hook改造，鼠标位置
+    // 3鼠标位置，hook改造
     const { x, y } = useMousePosition();
 
-    // hook，接口
+    // hook，4接口
     // const { loaded, result } = useURLLoader<DogResult>(
     //   "https://dog.ceo/api/breeds/image/random"
     // );
@@ -76,13 +79,7 @@ export default defineComponent({
       "https://api.thecatapi.com/v1/images/search?limit=1"
     );
     // result.value[0].url
-    
 
-    // 关闭弹窗
-    const closeModal = () => {
-      console.log("关闭弹窗");
-    };
-    const visible = ref(false);
     // return {
     //   count,
     //   double,
@@ -98,25 +95,40 @@ export default defineComponent({
     // };
 
     const data: DataProps = reactive({
+      // 1增加
       count: 0,
       double: computed(() => data.count * 2),
       increase: () => {
         data.count++;
       },
+      // 2字符串拼接，watch
       greetings: "",
       addGreetings: () => {
-        greetings.value += "hello!";
+        greetings.value += "hello!"; // 这个是外部的greeting
+        data.greetings += "hello"; // 这个才是data里面的
+      },
+      // 5关闭弹窗
+        visible: false,
+      openModal:() => {
+        data.visible = true;
+      },
+      closeModal: () => {
+        data.visible = false;
       },
     });
-    const greetings = ref("");
-    const refData = toRefs(data);
+    const greetings = ref(""); // 外部的greeting
     watch([greetings, data], (newValue, oldValue) => {
       console.log("old", oldValue);
       console.log("new", newValue);
       document.title = greetings.value + data.count;
     });
+    const refData = toRefs(data);
     return {
       ...refData,
+      x,
+      y,
+      loaded,
+      result,
     };
   },
   components: { Modal },
