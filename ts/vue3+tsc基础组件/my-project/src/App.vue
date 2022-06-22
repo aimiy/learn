@@ -19,6 +19,7 @@ import {
   computed,
   defineComponent,
   onBeforeUnmount,
+  onErrorCaptured,
   onMounted,
   reactive,
   ref,
@@ -123,6 +124,11 @@ export default defineComponent({
       document.title = greetings.value + data.count;
     });
     const refData = toRefs(data);
+    // 6 TODO: suspense
+    // 7 TODO: onErrorCaptured抓捕组件里面的错误
+    onErrorCaptured((error) => {
+      console.log(error)
+    })
     return {
       ...refData,
       x,
