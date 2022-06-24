@@ -1,15 +1,21 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
+import ColumnList from "./components/ColumnList.vue"
 
+</script>
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <div class="container">
+    qweqw
+    <ColumnList></ColumnList>
+  </div>
 </template>
 
+
+
 <style>
+/* import 'bootstrap/dist/css/bootstrap.min.css' */
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
