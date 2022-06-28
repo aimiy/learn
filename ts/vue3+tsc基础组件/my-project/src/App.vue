@@ -2,15 +2,15 @@
   <div>
     <h1>{{count}}</h1>
     <h1>{{double}}</h1>
-    <h1 v-if="!loaded">loading!...</h1>
-    <img v-if="loaded" :src="result[0].url" alt="图片"><br>
     <button @click="increase">👍+1</button><br>
     <h1>{{greetings}}</h1>
     <button @click="addGreetings">addGreetings</button>
+    <button @click="openModal">openModal</button>
     <h1>x:{{x}}，y:{{y}}</h1>
     <Modal @close-modal="closeModal" :visible="visible"></Modal>
-    <button @click="openModal">openModal</button>
     <div v-if="hPress">h被按下</div>
+    <h1 v-if="!loaded">loading!...</h1>
+    <img v-if="loaded" :src="result[0].url" alt="图片"><br>
   </div>
 </template>
 
@@ -36,7 +36,12 @@ interface DataProps {
   double: number;
   increase: () => void;
   greetings: string;
+  addGreetings: () => void;
+  closeModal: () => void;
+  openModal: () => void;
+  hPress: boolean;
   visible: boolean;
+
 }
 interface DogResult {
   status: "success" | "failed";
