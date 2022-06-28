@@ -8,23 +8,24 @@
                 <button type="button" class="btn btn-outline-light btn-sm">登录</button>
             </span>
             <span v-else>
-                你好！{{ user.name }}
+                <dropdown :title="`你好！${user.name}`">
+                    <dropdownItem disabled>新建文章</dropdownItem>
+                    <dropdownItem>编辑资料</dropdownItem>
+                    <dropdownItem>退出登录</dropdownItem>
+                </dropdown>
             </span>
-            <div class="collapse navbar-collapse" id="navbarID">
-                <div class="navbar-nav">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </div>
-            </div>
         </div>
     </nav>
 </template>
 
 <script setup lang='ts'>
+import dropdown from './dropdown.vue';
+import dropdownItem from './dropdownItem.vue'
 import { PropType } from 'vue';
 export interface userProps {
     isLogin: boolean;
     name?: string;
-    id?:number;
+    id?: number;
 }
 const props = defineProps({
     user: {
