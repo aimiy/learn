@@ -12,7 +12,8 @@
 </template>
 
 <script setup lang='ts' setupContext>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import useClickOutside from '../hooks/useClickOutside';
 
 const props = defineProps({
     title: {
@@ -23,21 +24,13 @@ const props = defineProps({
 let isShow = ref(false)
 const dropdownClick = () => {
     isShow.value = !isShow.value
-    console.log(isShow)
 }
 const dropdownRef = ref()
-onMounted(() => {
-    const mouseClick = (e: MouseEvent) => {
-        console.log(e.target)
-        console.log(dropdownRef.value)
-        console.log()
-        const isClick = dropdownRef.value.contains(e.target)
-        if(!isClick){
-            isShow.value = false
-
-        }
+const isClickOutside = useClickOutside(dropdownRef)
+watch(isClickOutside, () => {
+    if(isShow.value && isClickOutside.value){
+        isShow.value = !isShow.value
     }
-    document.addEventListener('click', mouseClick)
 })
 </script>
 <style>
