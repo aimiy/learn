@@ -21,3 +21,4 @@ interface Iname {
 }
 type IPerson = Iname & { age: number }
 let person: IPerson = { name: "fu", age: 11 }
+
