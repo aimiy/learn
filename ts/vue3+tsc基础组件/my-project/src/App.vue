@@ -1,21 +1,31 @@
 <template>
   <div>
-    <h1>{{count}}</h1>
-    <h1>{{double}}</h1>
+    <h1>{{ count }}</h1>
+    <h1>{{ double }}</h1>
     <button @click="increase">👍+1</button><br>
-    <h1>{{greetings}}</h1>
+    <h1>{{ greetings }}</h1>
     <button @click="addGreetings">addGreetings</button>
     <button @click="openModal">openModal</button>
-    <h1>x:{{x}}，y:{{y}}</h1>
+    <h1>x:{{ x }}，y:{{ y }}</h1>
     <Modal @close-modal="closeModal" :visible="visible"></Modal>
     <div v-if="hPress">h被按下</div>
     <h1 v-if="!loaded">loading!...</h1>
-    <img v-if="loaded" :src="result[0].url" alt="图片"><br>
+    <img v-if="loaded && result" :src="result[0].url" alt="图片"><br>
+    <suspense>
+      <template #default>
+        <asyncShow></asyncShow>
+      </template>
+      <template #fallback>
+        suspense loading...
+      </template>
+    </suspense>
+    <h1>{{errorInfo}}</h1>
   </div>
 </template>
 
 <script lang="ts">
 import Modal from "./components/Modal.vue";
+import asyncShow from "./components/asyncShow.vue";
 import {
   computed,
   defineComponent,
@@ -41,7 +51,6 @@ interface DataProps {
   openModal: () => void;
   hPress: boolean;
   visible: boolean;
-
 }
 interface DogResult {
   status: "success" | "failed";
@@ -56,6 +65,14 @@ interface CatResult {
 export default defineComponent({
   name: "App",
   setup() {
+    // 7 onErrorCaptured抓捕组件里面的错误
+    let errorInfo = ref(null)
+    onErrorCaptured((error:any) => {
+      console.log(error);
+      errorInfo.value = error
+      return true
+    });
+
     // 1增加
     // const count = ref(0);
     // const double = computed(() => count.value * 2);
@@ -86,7 +103,6 @@ export default defineComponent({
     const { loaded, result } = useURLLoader<CatResult[]>(
       "https://api.thecatapi.com/v1/images/search?limit=1"
     );
-    // result.value[0].url
 
     // return {
     //   count,
@@ -123,7 +139,8 @@ export default defineComponent({
       closeModal: () => {
         data.visible = false;
       },
-      hPress: useKeyPress("h"),
+      // 8按键被按下
+      hPress: useKeyPress("h")
     });
     const greetings = ref(""); // 外部的greeting
     watch([greetings, data], (newValue, oldValue) => {
@@ -131,22 +148,19 @@ export default defineComponent({
       console.log("new", newValue);
       document.title = greetings.value + data.count;
     });
+    // 6 suspense
+    
     const refData = toRefs(data);
-    // 6 TODO: suspense
-    // 7 TODO: onErrorCaptured抓捕组件里面的错误
-    onErrorCaptured((error) => {
-      console.log(error);
-    });
-    // 8 TODO 按键被按下
     return {
       ...refData,
       x,
       y,
       loaded,
       result,
+      errorInfo
     };
   },
-  components: { Modal },
+  components: { Modal, asyncShow },
 });
 </script>
 
