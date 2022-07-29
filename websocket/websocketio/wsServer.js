@@ -1,36 +1,35 @@
-import { createServer } from "http";
-import { Server } from "socket.io";
-
 var PORT = 8001;
 var clientCount = 0;
-const httpServer = createServer();
-const io = new Server(httpServer, {
-	// options
+
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+app.get('/', (req, res) => {
+	res.sendFile(__dirname + '/index.html');
 });
 
 io.on("connection", (socket) => {
 	clientCount++;
 	console.log(`New connection,listening on${PORT},${clientCount}`)
 	let userId = clientCount;
-	broadcast(userId + "come in");
-	conn.on("text", function (str) {
+	socket.broadcast.emit(userId + "come in");
+	socket.on("text", function (str) {
 		console.log("Received " + str)
-		// conn.sendText()
-		broadcast(`${userId}says: ${str}`)
+		io.emit('text', `${userId}says: ${str}`);
 	})
-	conn.on("close", function (code, reason) {
+	socket.on("disconnect", function (code, reason) {
 		console.log(userId + "Connection closed")
-		broadcast(`${userId}leave`)
+		socket.broadcast.emit(`${userId}leave`)
 	})
-	conn.on("error", function (err) {
+	socket.on("error", function (err) {
 		console.log(err)
 	})
 });
 
-httpServer.listen(PORT);
-
-function broadcast(text) {
-	server.connections.forEach(function (conn) {
-		conn.sendText(text)
-	})
-}
+server.listen(3000, () => {
+	console.log('listening on *:' + 3000);
+});

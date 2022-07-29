@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>chat</title>
-    <script src="./socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
+
 <body>
     <h1>echo test</h1>
     <input type="text" id="request">
     <button id="sendBtn">发送</button>
     <div id="response"></div>
     <script>
-        var websocket = io("ws://localhost:8001")
+        var websocket = io()
         var responseDiv = document.getElementById("response")
         var requestInp = document.getElementById("request")
         var sendBtn = document.getElementById("sendBtn")
-        websocket.onopen = () => {
+        websocket.on('connect', () => {
+            console.log('connect')
             responseDiv.innerHTML = "connected"
-        }
-        websocket.onclose = () => {
+        })
+        websocket.on('close', () => {
             console.log("close")
-        }
-        websocket.onmessage = (e) => {
-            console.log(e.data)
-            responseDiv.innerHTML+=e.data + "<br/>"
-        }
-        sendBtn.addEventListener("click",() => {
-            websocket.send(requestInp.value)
+        })
+        websocket.on('text', (e) => {
+            console.log('text:' + e)
+            responseDiv.innerHTML += e + "<br/>"
+        })
+        websocket.on('broadcast', (e) => {
+            console.log('text:' + e)
+            responseDiv.innerHTML += e + "<br/>"
+        })
+        sendBtn.addEventListener("click", () => {
+            websocket.emit('text', requestInp.value)
         })
     </script>
 </body>
+
 </html>
