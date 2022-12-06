@@ -1,10 +1,11 @@
 auto("fast"); zhifubaoManure
 setScreenMetrics(1080, 1920);
 message('开始执行');
-launchApp("支付宝");
-textClick("芭芭农场", "wait", "area")
-sleep(5000)
-zhifubaoManure()
+
+// launchApp("支付宝");
+// textClick("芭芭农场", "wait", "area")
+// sleep(5000)
+// zhifubaoManure()
 // taobaoManure()
 // feedChickens()
 message("脚本执行结束！")
@@ -26,10 +27,19 @@ function zhifubaoManure() {
         text("去喂鸡").click()
         sleep(5000)
         feedChickens()
+        goBack()
+    }
+    clickTextRightBtn("去森林收自己能量/给好友浇水")
+    sleep(5000)
+    if (text("蚂蚁森林").exists()) {
+        treePower()
+        sleep(2000)
+        treePower()
+        goBack()
     }
     sleep(2000)
     textClick("领取")
-    
+
     // readTask()
     swipe(510, 1900, 500, 1000, 1000)
     sleep(1000)
@@ -77,15 +87,30 @@ function taobaoManure() {
 }
 
 // 任务
+function treePower() {
+    message("点击【收能量】区域：")
+    click(240, 700)
+    sleep(2000)
+    click(370, 645)
+    sleep(2000)
+    click(500, 637)
+    sleep(2000)
+    click(630, 640)
+    sleep(2000)
+    click(760, 680)
+    sleep(2000)
+    click(890, 720)
+}
+
 function feedChickens() {
-    // message("点击【找小鸡】区域：" + click(500, 1400))
-    // sleep(3000)
-    // message("点击【两边小鸡】区域：" + click(450, 1500) + click(817, 1500))
-    // sleep(2000)
-    // if(text("确认").exists()){
-    //     text("确认").click()
-    //     sleep(1000)
-    // }
+    message("点击【找小鸡】区域：" + click(500, 1400))
+    sleep(3000)
+    message("点击【两边小鸡】区域：" + click(450, 1500) + click(800, 1500))
+    sleep(2000)
+    if (text("确认").exists()) {
+        text("确认").click()
+        sleep(1000)
+    }
     message("点击【喂饲料】区域：" + click(950, 2180));
     sleep(5000)
     message("点击【领饲料】区域：" + click(250, 2180));
@@ -96,9 +121,9 @@ function feedChickens() {
     swipe(510, 1900, 500, 1000, 1000)
     sleep(1000)
     textClick("领取", "nowait", "area");
-    goBack();
     sleep(3000)
     goBack();
+    sleep(3000)
 }
 function readTask(t) {
     message("查找【" + t + "】循环任务");
