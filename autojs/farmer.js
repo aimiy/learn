@@ -7,23 +7,24 @@ sleep(5000)
 zhifubaoManure()
 // taobaoManure()
 // feedChickens()
+// taobaoManureTask()
 message("脚本执行结束！")
 
 function zhifubaoManure() {
     // 施肥
-    manureTask()
-    sleep(3000)
     message("点击领取肥料区域：" + click(800, 1400))
     sleep(3000)
     if (text("去领更多肥料").exists()) {
-        text("去领更多肥料").click()
-    } else {
-        textClick("任务列表", "wait")
+        message("点击【关闭弹窗】区域：" + click(500, 1821))
     }
     sleep(3000)
+    manureTask()
+    sleep(3000)
+    textClick("任务列表", "wait")
+    sleep(4000)
 
     if (text("去喂鸡").exists()) {
-        text("去喂鸡").click()
+        textClick("去喂鸡", "nowait")
         sleep(5000)
         feedChickens()
         goBack()
@@ -41,7 +42,7 @@ function zhifubaoManure() {
     }
     sleep(2000)
     textClick("领取")
-    
+
     swipe(510, 1900, 500, 1000, 1000)
     sleep(1000)
     clickTextRightBtn("逛淘宝芭芭农场领900肥料")
@@ -70,7 +71,9 @@ function taobaoManure() {
     }
 
     textClick("立即领取")
-    message("点击领取兔子肥料区域：" + click(194, 1500))
+
+    rabbitTask()
+
     textClick("点击领取")
     sleep(2000)
     // TODO :好友林
@@ -90,6 +93,8 @@ function taobaoManure() {
         text("关闭").click()
         sleep(1000)
     }
+    taobaoManureTask()
+    sleep(1000)
 
     message("点击集肥料区域：" + click(800, 2000))
     sleep(3000)
@@ -97,16 +102,15 @@ function taobaoManure() {
     textClick("去签到")
     sleep(2000)
     textClick("去领取");
-    readTask("浏览15秒得1500肥料");
+    readTask("浏览15秒得");
     sleep(3000)
-    if (text("逛支付宝芭芭农场领900肥料").exists()) {
-        textClick("逛支付宝芭芭农场领900肥料");
+    let btn = textStartsWith("逛逛支付宝芭芭农场").findOnce()
+    if (btn) {
+        message("点击去支付宝：" + btn.click())
         sleep(3000)
         launchApp("淘宝");
         sleep(5000)
     }
-
-    // readTask("逛逛得600肥料");
     answerQuestion()
 }
 
@@ -125,33 +129,35 @@ function treePower() {
     sleep(2000)
     click(890, 720)
 }
-
+function rabbitTask() {
+    // message("点击领取兔子肥料区域：" + click(194, 1500))
+}
 function feedChickens() {
     // 点击两边小鸡有问题，领取也有问题
-    message("点击【找小鸡】区域：" + click(500, 1400))
-    sleep(3000)
-    message("点击【两边小鸡】区域：" + click(450, 1500) + click(750, 1500))
-    sleep(2000)
-    if (text("确认").exists()) {
-        text("确认").click()
-        sleep(1000)
-    }
-    message("点击【喂饲料】区域：" + click(950, 2180));
-    sleep(5000)
+    // message("点击【找小鸡】区域：" + click(500, 1300))
+    // sleep(3000)
+    // message("点击【两边小鸡】区域：" + click(450, 1500) + click(750, 1500))
+    // sleep(2000)
+    // if (text("确认").exists()) {
+    //     text("确认").click()
+    //     sleep(1000)
+    // }
+    // message("点击【喂饲料】区域：" + click(950, 2180));
+    // sleep(5000)
     message("点击【领饲料】区域：" + click(250, 2180));
     sleep(3000);
-    textClick("领取", "nowait");
+    // textClick("领取", "nowait");
     sleep(2000)
     swipe(510, 1900, 500, 1000, 1000)
 
     sleep(1000)
-    textClick("领取", "nowait");
+    // textClick("领取", "nowait");
     sleep(1000)
 
     swipe(510, 1900, 500, 1000, 1000)
-    sleep(1000)
     swipe(510, 1900, 500, 1000, 1000)
-    sleep(2000)
+    sleep(1000)
+    sleep(5000)
     textClick("领取", "nowait", "area");
     sleep(3000)
     goBack();
@@ -196,6 +202,17 @@ function manureTask() {
     message("点击【施肥】区域：" + click(500, 1895))
     sleep(1000)
     manureTask();
+}
+function taobaoManureTask(){
+    message("点击【是否施肥】区域：" + click(500, 1600))
+    sleep(3000)
+    if (text("礼包内含无门槛红包和超多肥料").exists()) {
+        message("点击【关闭弹窗】区域：" + click(500, 1719))
+        sleep(3000)
+        message("点击【施肥】区域：" + click(500, 1895))
+        sleep(3000)
+        taobaoManureTask()
+    }
 }
 function answerQuestion() {
     message("查找答题")
