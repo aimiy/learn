@@ -1,11 +1,11 @@
 auto("fast");
 setScreenMetrics(1080, 1920);
 message('开始执行');
-// launchApp("支付宝");
-// textClick("芭芭农场", "wait", "area")
-// sleep(5000)
-// zhifubaoManure()
-taobaoManure()
+launchApp("支付宝");
+textClick("芭芭农场", "wait", "area")
+sleep(6000)
+zhifubaoManure()
+// taobaoManure()
 // feedChickens()
 // taobaoManureTask()
 message("脚本执行结束！")
@@ -31,7 +31,7 @@ function zhifubaoManure() {
         sleep(2000)
     }
     swipe(510, 1900, 500, 1000, 1000)
-    sleep(1000)
+    sleep(2000)
     clickTextRightBtn("去森林收自己能量/给好友浇水")
     sleep(5000)
     if (text("蚂蚁森林").exists()) {
@@ -91,7 +91,7 @@ function taobaoManure() {
         sleep(1000)
     }
     taobaoManureTask()
-    
+
     message("点击集肥料区域：" + click(800, 2000))
     sleep(3000)
 
@@ -142,7 +142,7 @@ function friendsTree() {
             message("点击【帮施肥】按钮：" + click(x, y));
             sleep(2000);
         });
-    }else{
+    } else {
         message("【收肥料】任务为空");
     }
     goBack()
@@ -184,9 +184,17 @@ function readTask(t) {
     message("查找【" + t + "】循环任务");
     let res = clickTextRightBtn(t);
     if (res) {
-        message("滑动并等待15s")
-        swipe(510, 1000, 500, 500, 2000)
-        sleep(16000)
+        sleep(2000)
+        if (text("搜索有福利").exists()) {
+            message("点击【关键词搜索】区域：" + click(400, 800));
+            sleep(16000)
+            goBack();
+            sleep(1000);
+        } else {
+            message("滑动并等待15s")
+            swipe(510, 1000, 500, 500, 2000)
+            sleep(16000)
+        }
         goBack();
         sleep(1000);
         readTask(t);
@@ -221,14 +229,15 @@ function manureTask() {
 }
 function taobaoManureTask() {
     message("点击【是否施肥】区域：" + click(500, 1600))
-    sleep(3000)
+    sleep(2000)
+    // if()
     if (text("礼包内含无门槛红包和超多肥料").exists()) {
         message("点击【关闭弹窗】区域：" + click(500, 1719))
         sleep(3000)
-        message("点击【施肥】区域：" + click(500, 1895))
+        message("点击【施肥】区域：" + click(500, 1995))
         sleep(3000)
         taobaoManureTask()
-    }else{
+    } else {
         message("没有【施肥】任务了！")
         sleep(3000)
     }
