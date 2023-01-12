@@ -11,6 +11,8 @@ zhifubaoManure()
 message("脚本执行结束！")
 
 function zhifubaoManure() {
+    textClick("开心收下", "nowait")
+    sleep(3000)
     // 施肥
     message("点击领取肥料区域：" + click(800, 1400))
     sleep(3000)
@@ -45,7 +47,7 @@ function zhifubaoManure() {
 
     swipe(510, 1900, 500, 1000, 1000)
     sleep(1000)
-    clickTextRightBtn("逛淘宝芭芭农场领1500肥料")
+    clickTextRightBtn("逛淘宝芭芭农场领900肥料")
     sleep(10000)
     if (text("继续赚肥料").exists()) {
         textClick("继续赚肥料")
@@ -61,19 +63,17 @@ function zhifubaoManure() {
 }
 function taobaoManure() {
     textClick("继续努力")
-    sleep(1000)
-    if (textStartsWith("队伍").findOnce()) {
+    sleep(1500)
+    textClick("立即领取")
+    if (textStartsWith("合种亲密度").findOnce()) {
         textClick("立即领取")
         sleep(2000)
-        textClick("立即领取")
-        sleep(1000)
+        // textClick("立即领取")
         goBack()
+        sleep(2000)
     }
-
-    textClick("立即领取")
-
-    rabbitTask()
-
+    
+    
     textClick("点击领取")
     sleep(2000)
     if (text("逛逛支付宝芭芭农场，立得肥料").exists()) {
@@ -83,6 +83,8 @@ function taobaoManure() {
         sleep(5000)
     }
     friendsTree()
+    sleep(1000)
+    rabbitTask()
     sleep(1000)
     message("点击【点击领取】肥料区域：" + click(887, 1450))
     sleep(1000)
@@ -126,12 +128,19 @@ function treePower() {
     click(890, 720)
 }
 function rabbitTask() {
-    // TODO :兔子
-    // message("点击领取兔子肥料区域：" + click(194, 1500))
+    message("点击领取兔子肥料区域：" + click(194, 1500))
 }
 function friendsTree() {
     message("点击【好友林】区域：" + click(250, 2000))
     sleep(5000)
+    if (!text("农场好友林").exists()) {
+        message("再次点击【好友林】区域：" + click(250, 2000))
+        sleep(5000)
+    }
+    if (!text("农场好友林").exists()) {
+        console.log("进不去好友林界面，请确认参数")
+        return
+    }
     let btn = textStartsWith("Ta昨天施肥了").find()
     if (!btn.empty()) {
         btn.forEach(function (item) {
@@ -218,26 +227,47 @@ function manureTask() {
         textClick("立即领取")
         sleep(4000)
     }
+    if (text("开心收下").exists()) {
+        sleep(3000)
+        textClick("开心收下", "nowait")
+        sleep(4000)
+    }
+    message("点击【关闭弹窗】区域：" + click(508, 1875))
+
     let btn = textStartsWith("还差").findOnce()
     if (!btn) {
         message("没有【施肥】任务了！")
         return;
     }
-    message("点击【施肥】区域：" + click(500, 1895))
-    sleep(1000)
+    message("点击【施肥】区域：" + click(500, 1877))
+    sleep(2000)
     manureTask();
 }
+let noTask = 0;
 function taobaoManureTask() {
     message("点击【是否施肥】区域：" + click(500, 1600))
-    sleep(2000)
-    // if()
+    sleep(1500)
+
     if (text("礼包内含无门槛红包和超多肥料").exists()) {
+        noTask = 0;
         message("点击【关闭弹窗】区域：" + click(500, 1719))
-        sleep(3000)
+        sleep(2000)
         message("点击【施肥】区域：" + click(500, 1995))
         sleep(3000)
+        if (text("立即领取").exists()) {
+            message("点击【关闭弹窗】区域：" + click(500, 1719))
+            sleep(2000)
+        }
         taobaoManureTask()
     } else {
+        // 有可能领到了礼包并且自动关闭了，两次再定性为没有施肥任务
+        noTask += 1;
+        message(`第${noTask}次发现没有施肥弹窗`)
+        if (noTask < 3) {
+            sleep(2500)
+            taobaoManureTask()
+            return
+        }
         message("没有【施肥】任务了！")
         sleep(3000)
     }
