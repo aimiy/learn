@@ -7,7 +7,7 @@ sleep(6000)
 zhifubaoManure()
 // taobaoManure()
 // feedChickens()
-// taobaoManureTask()
+taobaoManureTask()
 message("脚本执行结束！")
 
 function zhifubaoManure() {
@@ -72,8 +72,8 @@ function taobaoManure() {
         goBack()
         sleep(2000)
     }
-    
-    
+
+
     textClick("点击领取")
     sleep(2000)
     if (text("逛逛支付宝芭芭农场，立得肥料").exists()) {
@@ -84,7 +84,7 @@ function taobaoManure() {
     }
     friendsTree()
     sleep(1000)
-    rabbitTask()
+    // rabbitTask()
     sleep(1000)
     message("点击【点击领取】肥料区域：" + click(887, 1450))
     sleep(1000)
@@ -159,35 +159,31 @@ function friendsTree() {
 }
 function feedChickens() {
     // TODO：点击两边小鸡有问题，领取也有问题
-    // message("点击【找小鸡】区域：" + click(500, 1300))
-    // sleep(3000)
-    // message("点击【两边小鸡】区域：" + click(450, 1500) + click(750, 1500))
-    // sleep(2000)
-    // if (text("确认").exists()) {
-    //     text("确认").click()
-    //     sleep(1000)
-    // }
     message("点击【喂饲料】区域：" + click(950, 2180));
-    sleep(5000)
+    sleep(2000)
+    if (text("找小鸡").exists()) {
+        textClick("找小鸡")
+        sleep(5000)
+        message("点击【两边小鸡】区域：" + click(450, 1500) + click(750, 1500))
+        sleep(5000)
+        message("点击【喂饲料】区域：" + click(950, 2180));
+        sleep(5000)
+    }
+
     message("点击【领饲料】区域：" + click(250, 2180));
-    sleep(3000);
-    // textClick("领取", "nowait");
+    sleep(5000);
+    textClick("领取");
     sleep(2000)
     swipe(510, 1900, 500, 1000, 1000)
-
-    sleep(1000)
-    // textClick("领取", "nowait");
-    sleep(1000)
-
+    sleep(2000)
+    textClick("领取");
+    sleep(2000)
     swipe(510, 1900, 500, 1000, 1000)
     swipe(510, 1900, 500, 1000, 1000)
-    sleep(1000)
     sleep(5000)
-    textClick("领取", "nowait", "area");
-    sleep(3000)
-    goBack();
-    sleep(3000)
-    goBack();
+    textClick("领取");
+    textClick("领取");
+    outBack("蚂蚁庄园")
 }
 function readTask(t) {
     message("查找【" + t + "】循环任务");
@@ -243,34 +239,43 @@ function manureTask() {
     sleep(2000)
     manureTask();
 }
-let noTask = 0;
 function taobaoManureTask() {
-    message("点击【是否施肥】区域：" + click(500, 1600))
-    sleep(1500)
+    let noTask = 0;
 
-    if (text("礼包内含无门槛红包和超多肥料").exists()) {
-        noTask = 0;
-        message("点击【关闭弹窗】区域：" + click(500, 1719))
-        sleep(2000)
-        message("点击【施肥】区域：" + click(500, 1995))
-        sleep(3000)
-        if (text("立即领取").exists()) {
+    var task = function () {
+        message("点击【是否施肥】区域：" + click(500, 1600))
+        sleep(1500)
+
+        if (text("礼包内含无门槛红包和超多肥料").exists()) {
+            noTask = 0;
             message("点击【关闭弹窗】区域：" + click(500, 1719))
             sleep(2000)
+            message("点击【施肥】区域：" + click(500, 1995))
+            sleep(3000)
+            if (text("立即领取").exists()) {
+                message("点击【关闭立即领取弹窗】区域：" + click(500, 1719))
+                sleep(2000)
+            }
+            if (text("下单提取").exists()) {
+                message("点击【关闭下单提取弹窗】区域：" + click(500, 1800))
+                sleep(2000)
+            }
+            task()
+        } else {
+            // 有可能领到了礼包并且自动关闭了，两次再定性为没有施肥任务
+            noTask += 1;
+            message(`第${noTask}次发现没有施肥弹窗`)
+            if (noTask < 3) {
+                sleep(2500)
+                task()
+                return
+            }
+            message("没有【施肥】任务了！")
+            sleep(3000)
         }
-        taobaoManureTask()
-    } else {
-        // 有可能领到了礼包并且自动关闭了，两次再定性为没有施肥任务
-        noTask += 1;
-        message(`第${noTask}次发现没有施肥弹窗`)
-        if (noTask < 3) {
-            sleep(2500)
-            taobaoManureTask()
-            return
-        }
-        message("没有【施肥】任务了！")
-        sleep(3000)
     }
+    task()
+
 }
 function answerQuestion() {
     message("查找答题")
@@ -331,6 +336,15 @@ function clickTextRightBtn(t) {
 function message(t) {
     console.log(t)
     toast(t)
+}
+function outBack(appName) {
+    if (text(appName).exists()) {
+        goBack()
+        sleep(3000)
+        outBack(appName)
+    } else {
+        message("离开" + appName)
+    }
 }
 function goBack() {
     back()
