@@ -20,7 +20,7 @@ gulp.task('watch', function () {
     })
 });
 
-gulp.task('default',['server','watch']);
+gulp.task('default',gulp.series('server','watch'));
 
 // gulp.task('html', function(){
 //     console.log('html改变，刷新');
