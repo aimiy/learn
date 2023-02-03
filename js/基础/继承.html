@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>继承</title>
+    <link rel="stylesheet" href="./test.css">
+</head>
+
+<body>
+</body>
+<script>
+    // 1.原型链继承
+    // 将父类的实例作为子类的原型
+    // function Parent() {
+    //     this.isShow = true
+    //     this.info = {
+    //         name: "parent",
+    //         age: 50
+    //     }
+    // }
+    // Parent.prototype.getInfo = function () {
+    //     // console.log(this.info)
+    //     // console.log(this.isShow)
+    // }
+    // function Child() {
+    // }
+    // Child.prototype.sayAge = function () {
+    //     console.log(this.info.age);
+    // }
+    // Child.prototype = new Parent()
+    // 1.父类方法子类应可以复用 true
+    // 2.父类的引用类型应不会被子类修改 true
+    // 3.更改一个子类的引用属性，其他子类不应受影响 false
+    // 4.更改一个子类的普通属性，其他子类不应受影响 true
+    // 5.子类型实例应能给父类型构造函数传参 false
+
+    // 2.盗用构造函数继承(构造函数继承)
+    // 在子类构造函数中调用父类构造函数，可以在子类构造函数中使用call()和apply()方法
+    // function Parent(name) {
+    //     this.isShow = true
+    //     this.info = {
+    //         name: name || "parent",
+    //         age: 50
+    //     }
+    // }
+    // Parent.prototype.getInfo = function () {
+    //     // console.log(this.info)
+    //     // console.log(this.isShow)
+    // }
+    // function Child(name) {
+    //     Parent.call(this, name)
+    // }
+    // Child.prototype.sayAge = function () {
+    //     console.log(this.info.age);
+    // }
+    // 1.父类方法子类应可以复用 false
+    // 2.父类的引用类型应不会被子类修改 true
+    // 3.更改一个子类的引用属性，其他子类不应受影响 true
+    // 4.更改一个子类的普通属性，其他子类不应受影响 true
+    // 5.子类型实例应能给父类型构造函数传参 true
+    // 6.用传参更改一个子类的引用属性，其他子类不应受影响 true
+
+    // 三、组合继承
+    // 组合继承综合了原型链继承和盗用构造函数继承(构造函数继承)，将两者的优点结合了起来，
+    // 基本的思路就是使用原型链继承原型上的属性和方法，而通过构造函数继承实例属性，这样既可以把方法定义在原型上以实现重用，又可以让每个实例都有自己的属性
+    function Parent(name) {
+        this.isShow = true
+        this.info = {
+            name: name || "parent",
+            age: 50
+        }
+    }
+    Parent.prototype.getInfo = function () {
+        // console.log(this.info)
+        // console.log(this.isShow)
+    }
+    function Child(name) {
+        Parent.call(this, name)
+    }
+    Child.prototype = new Parent()
+    Child.prototype.sayAge = function () {
+        console.log(this.info.age);
+    }
+    // 1.父类方法子类应可以复用 true
+    // 2.父类的引用类型应不会被子类修改 true
+    // 3.更改一个子类的引用属性，其他子类不应受影响 true
+    // 4.更改一个子类的普通属性，其他子类不应受影响 true
+    // 5.子类型实例应能给父类型构造函数传参 true
+    // 6.用传参更改一个子类的引用属性，其他子类不应受影响 true
+
+    // 四、原型式继承
+    // 对参数对象的一种浅复制
+    // function objectCopy(obj) {
+    //     function Fun() { };
+    //     Fun.prototype = obj;
+    //     return new Fun()
+    // }
+
+    // let Parent = {
+    //     isShow: true,
+    //     info: {
+    //         name: name || "parent",
+    //         age: 50
+    //     },
+    //     getInfo: function () {
+    //         // console.log(this.info)
+    //         // console.log(this.isShow)
+    //     }
+    // }
+    // 1.父类方法子类应可以复用 true
+    // 2.父类的引用类型应不会被子类修改 false
+    // 3.更改一个子类的引用属性，其他子类不应受影响 false
+    // 4.更改一个子类的普通属性，其他子类不应受影响 true
+    // 5.子类型实例应能给父类型构造函数传参 false
+
+
+    // 五、寄生式继承
+    // 使用原型式继承对一个目标对象进行浅复制，增强这个浅复制的能力
+    // function objectCopy(obj) {
+    //     function Fun() { };
+    //     Fun.prototype = obj;
+    //     return new Fun()
+    // }
+    // function createAnother(original) {
+    //     let clone = objectCopy(original);
+    //     clone.getInfo = function () {
+    //         // console.log(this.info)
+    //         // console.log(this.isShow)
+    //     }
+    //     return clone;
+    // }
+
+    // let Parent = {
+    //     isShow: true,
+    //     info: {
+    //         name: name || "parent",
+    //         age: 50
+    //     }
+    // }
+    // 1.父类方法子类应可以复用 true
+    // 2.父类的引用类型应不会被子类修改 false
+    // 3.更改一个子类的引用属性，其他子类不应受影响 false
+    // 4.更改一个子类的普通属性，其他子类不应受影响 true
+    // 5.子类型实例应能给父类型构造函数传参 false
+
+    // 六、寄生式组合继承
+    // function objectCopy(obj) {
+    //     function Fun() { };
+    //     Fun.prototype = obj;
+    //     return new Fun()
+    // }
+    // function inheritPrototype(child, parent) {
+    //     let prototype = objectCopy(parent.prototype); // 创建对象
+    //     prototype.constructor = child; // 增强对象
+    //     Child.prototype = prototype; // 赋值对象
+    // }
+    // function Parent(name) {
+    //     this.isShow = true
+    //     this.info = {
+    //         name: name || "parent",
+    //         age: 50
+    //     }
+    // }
+    // Parent.prototype.getInfo = function () {
+    //     // console.log(this.info)
+    //     // console.log(this.isShow)
+    // }
+
+    // function Child(name) {
+    //     Parent.call(this, name)
+    // }
+    // Child.prototype.sayAge = function () {
+    //     console.log(this.info.age);
+    // }
+    // inheritPrototype(Child, Parent)
+
+
+    // 希望满足的测试
+    let c1 = new Child('child') // 1,2,3,6用
+    // let c1 = objectCopy(Parent) // 4
+    // let c1 = createAnother(Parent) //5
+    // 父类方法应可以复用
+    // 父类的引用类型应不会被子类修改，
+    console.log('1.父类方法子类应可以复用', Boolean(c1.getInfo))
+
+    c1.info.gender = "man"
+    let p = new Parent()// 1,2,3,6用
+    // let p = Parent; //4,5
+    console.log('2.父类的引用类型应不会被子类修改', p.info.gender == undefined)
+
+    let c2 = new Child()// 1,2,3,6用
+    // let c2 = objectCopy(Parent) //4
+    // let c2 = createAnother(Parent) //5
+    console.log('3.更改一个子类的引用属性，其他子类不应受影响', c2.info.gender == undefined)
+    // 更改一个子类的引用属性，其他子类不应受影响
+    // 更改一个子类的普通属性，其他子类不应受影响
+    c2.isShow = false
+    console.log('4.更改一个子类的普通属性，其他子类不应受影响', c2.isShow !== c1.isShow)
+    // 子类型实例应能给父类型构造函数传参
+
+    console.log('5.给子类添加方法，父类的方法不受影响', !Boolean(Parent.sayAge))
+    console.log('6.子类型实例应能给父类型构造函数传参', c1.info.name == 'child')
+    if (c1.info.name == 'child') {
+        console.log('7.用传参更改一个子类的引用属性，其他子类不应受影响', c2.info.name !== 'child')
+    }
+</script>
+
+</html>

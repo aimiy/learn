@@ -13,12 +13,18 @@ function server() {
 
 function watchTask() {
     livereload.listen();
-    watch('test.html', function (cb) {
-        console.log("重载", connect, livereload)
-        connect.reload()
+    watch(['*/*/*.html'],{ delay: 500 }, function (cb) {
+        console.log("重载", livereload)
         livereload.reload()
+        // connect.reload()
         cb()
     });
+    // watch('*/*/*.css', function (cb) {
+    //     console.log("重载js", livereload)
+    //     livereload.changed('*/*/*.html')
+    //     // connect.reload()
+    //     cb()
+    // });
 }
 
 function defaultTask(cb) {
