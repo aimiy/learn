@@ -9,11 +9,18 @@ var serverConfig = {
 }
 function server() {
     connect.server(serverConfig);
+    watchTask()
 }
 
 function watchTask() {
     livereload.listen();
     watch(['*/*/*.html'],{ delay: 500 }, function (cb) {
+        console.log("重载", livereload)
+        livereload.reload()
+        // connect.reload()
+        cb()
+    });
+    watch(['*/*.html'],{ delay: 500 }, function (cb) {
         console.log("重载", livereload)
         livereload.reload()
         // connect.reload()
@@ -29,7 +36,6 @@ function watchTask() {
 
 function defaultTask(cb) {
     server()
-    watchTask()
     cb();
 }
 
