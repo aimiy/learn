@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" manifest="/demo.manifest">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>manifest</title>
+    <script src="./app.js"></script>
+    <script src="./cache.js"></script>
+   
+</head>
+
+<body>
+
+</body>
+
+</html>
+<script>
+    var oAppCache = window.applicationCache;
+    var sCacheStatus = "Not supported";
+    switch (oAppCache.status) {
+        case 0: // UNCACHED == 0        
+            sCacheStatus = '（UNCACHED） : 无缓存， 即没有与页面相关的应用缓存'; break;
+        case 1: // IDLE == 1         
+            sCacheStatus = '（IDLE） : 闲置，即应用缓存未得到更新'; break;
+        case 2: // CHECKING == 2         
+            sCacheStatus = '（CHECKING） : 检查中，即正在下载描述文件并检查更新'; break;
+        case 3: // DOWNLOADING == 3         
+            sCacheStatus = '（DOWNLOADING） : 下载中，即应用缓存正在下载描述文件'; break;
+        case 4: // UPDATEREADY == 4         
+            sCacheStatus = '（UPDATEREADY） : 更新完成，所有资源都已下载完毕'; break;
+        case 5: // OBSOLETE == 5         
+            sCacheStatus = '（IDLE） : 废弃，即应用缓存的描述文件已经不存在了，因此页面无法再访问应用缓存)'; break;
+        default:
+            console.log('UKNOWN CACHE STATUS'); break;
+    }; 
+</script>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>margin重叠</title>
+    <style>
+        .parent{
+            background: blanchedalmond;
+            margin-bottom: 10px;
+            border: 1px solid black;
+        }
+        .box {
+            width: 200px;
+            height: 200px;
+            background: red;
+            margin: 10px;
+            border: 1px solid blue;
+            /* display: inline-block; */
+            /* float: left; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parent">
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+</body>
+
+</html>

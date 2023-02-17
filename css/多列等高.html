@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多列等高</title>
+    <style>
+        .box {
+            background: red;
+            /* overflow: hidden; */
+            display: flex;
+        }
+
+        .box-item {
+            display: inline-block;
+            background: blue;
+            width: 100px;
+            color: aliceblue;
+            word-break: break-all;
+            /* vertical-align: top;
+            padding-bottom: 200px;
+            margin-bottom: -200px; */
+            /* display: table-cell; */            
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="box-item">1</div>
+        <div class="box-item more-height">sadfsadfasdfasdfasdfasdfa胜多负少第三方发的口市佛教和 </div>
+        <div class="box-item">3</div>
+    </div>
+</body>
+
+</html>

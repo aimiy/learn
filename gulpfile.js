@@ -9,7 +9,7 @@ var serverConfig = {
 }
 function server() {
     connect.server(serverConfig);
-    watchTask()
+    // watchTask()
 }
 
 function watchTask() {

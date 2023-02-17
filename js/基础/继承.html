@@ -66,24 +66,25 @@
     // 三、组合继承
     // 组合继承综合了原型链继承和盗用构造函数继承(构造函数继承)，将两者的优点结合了起来，
     // 基本的思路就是使用原型链继承原型上的属性和方法，而通过构造函数继承实例属性，这样既可以把方法定义在原型上以实现重用，又可以让每个实例都有自己的属性
-    function Parent(name) {
-        this.isShow = true
-        this.info = {
-            name: name || "parent",
-            age: 50
-        }
-    }
-    Parent.prototype.getInfo = function () {
-        // console.log(this.info)
-        // console.log(this.isShow)
-    }
-    function Child(name) {
-        Parent.call(this, name)
-    }
-    Child.prototype = new Parent()
-    Child.prototype.sayAge = function () {
-        console.log(this.info.age);
-    }
+    // function Parent(name) {
+    //     this.isShow = true
+    //     this.info = {
+    //         name: name || "parent",
+    //         age: 50
+    //     }
+    //     console.log(this, "执行parent上下文")
+    // }
+    // Parent.prototype.getInfo = function () {
+    //     // console.log(this.info)
+    //     // console.log(this.isShow)
+    // }
+    // function Child(name) {
+    //     Parent.call(this, name)
+    // }
+    // Child.prototype = new Parent()
+    // Child.prototype.sayAge = function () {
+    //     console.log(this.info.age);
+    // }
     // 1.父类方法子类应可以复用 true
     // 2.父类的引用类型应不会被子类修改 true
     // 3.更改一个子类的引用属性，其他子类不应受影响 true
@@ -147,38 +148,41 @@
     // 5.子类型实例应能给父类型构造函数传参 false
 
     // 六、寄生式组合继承
-    // function objectCopy(obj) {
-    //     function Fun() { };
-    //     Fun.prototype = obj;
-    //     return new Fun()
-    // }
-    // function inheritPrototype(child, parent) {
-    //     let prototype = objectCopy(parent.prototype); // 创建对象
-    //     prototype.constructor = child; // 增强对象
-    //     Child.prototype = prototype; // 赋值对象
-    // }
-    // function Parent(name) {
-    //     this.isShow = true
-    //     this.info = {
-    //         name: name || "parent",
-    //         age: 50
-    //     }
-    // }
-    // Parent.prototype.getInfo = function () {
-    //     // console.log(this.info)
-    //     // console.log(this.isShow)
-    // }
+    function objectCopy(obj) {
+        function Fun() { };
+        Fun.prototype = obj;
+        return new Fun()
+    }
+    function inheritPrototype(child, parent) {
+        let prototype = objectCopy(parent.prototype); // 创建对象
+        console.log(prototype)
+        prototype.constructor = child; // 增强对象
+        child.prototype = prototype; // 赋值对象
+    }
+    function Parent(name) {
+        this.isShow = true
+        this.info = {
+            name: name || "parent",
+            age: 50
+        }
+        console.log(this, "执行parent上下文")
+    }
+    Parent.prototype.getInfo = function () {
+        // console.log(this.info)
+        // console.log(this.isShow)
+    }
 
-    // function Child(name) {
-    //     Parent.call(this, name)
-    // }
-    // Child.prototype.sayAge = function () {
-    //     console.log(this.info.age);
-    // }
-    // inheritPrototype(Child, Parent)
+    function Child(name) {
+        Parent.call(this, name)
+    }
+    Child.prototype.sayAge = function () {
+        console.log(this.info.age);
+    }
+    inheritPrototype(Child, Parent)
 
 
     // 希望满足的测试
+    console.log('***在没有调用new之前，不应执行parent上下文***，本条前面不应有打印')
     let c1 = new Child('child') // 1,2,3,6用
     // let c1 = objectCopy(Parent) // 4
     // let c1 = createAnother(Parent) //5
@@ -206,6 +210,7 @@
     if (c1.info.name == 'child') {
         console.log('7.用传参更改一个子类的引用属性，其他子类不应受影响', c2.info.name !== 'child')
     }
+
 </script>
 
 </html>
