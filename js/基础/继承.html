@@ -154,10 +154,10 @@
         return new Fun()
     }
     function inheritPrototype(child, parent) {
-        let prototype = objectCopy(parent.prototype); // 创建对象
-        console.log(prototype)
-        prototype.constructor = child; // 增强对象
-        child.prototype = prototype; // 赋值对象
+        let p = objectCopy(parent.prototype); // 创建对象
+       
+        child.prototype = p; // 重写子类的原型
+        p.constructor = child; // 重写被污染的子类的constructor
     }
     function Parent(name) {
         this.isShow = true

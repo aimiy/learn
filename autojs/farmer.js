@@ -1,13 +1,17 @@
 auto("fast");
 setScreenMetrics(1080, 1920);
 message('开始执行');
-launchApp("支付宝");
-textClick("芭芭农场", "wait", "area")
-sleep(6000)
-zhifubaoManure()
-// taobaoManure()
+// launchApp("支付宝");
+// textClick("芭芭农场", "wait", "area")
+// sleep(6000)
+// if (!textStartsWith("芭芭农场").findOnce()) {
+//     sleep(6000)
+// }
+// zhifubaoManure()
+// manureTask()
+taobaoManure()
 // feedChickens()
-taobaoManureTask()
+// taobaoManureTask()
 message("脚本执行结束！")
 
 function zhifubaoManure() {
@@ -65,6 +69,7 @@ function taobaoManure() {
     textClick("继续努力")
     sleep(1500)
     textClick("立即领取")
+    textConditionClickText("退出比赛", "退出比赛")
     if (textStartsWith("合种亲密度").findOnce()) {
         textClick("立即领取")
         sleep(2000)
@@ -72,7 +77,6 @@ function taobaoManure() {
         goBack()
         sleep(2000)
     }
-
 
     textClick("点击领取")
     sleep(2000)
@@ -82,10 +86,11 @@ function taobaoManure() {
         launchApp("淘宝");
         sleep(5000)
     }
+    // textConditionClickText("翻土拿奖励")
+    // textConditionClickText("跟着小手去翻土")
+    rabbitTask()
     friendsTree()
-    sleep(1000)
-    // rabbitTask()
-    sleep(1000)
+    
     message("点击【点击领取】肥料区域：" + click(887, 1450))
     sleep(1000)
     if (text("明日7点可领").exists()) {
@@ -94,14 +99,12 @@ function taobaoManure() {
     }
     taobaoManureTask()
 
-    message("点击集肥料区域：" + click(800, 2000))
+    message("点击集肥料区域：" + click(800, 1900))
     sleep(3000)
 
     textClick("去签到")
-    sleep(2000)
     textClick("去领取");
     readTask("浏览15秒得");
-    sleep(3000)
     let btn = textStartsWith("逛逛支付宝芭芭农场").findOnce()
     if (btn) {
         message("点击去支付宝：" + btn.click())
@@ -131,7 +134,7 @@ function rabbitTask() {
     message("点击领取兔子肥料区域：" + click(194, 1500))
 }
 function friendsTree() {
-    message("点击【好友林】区域：" + click(250, 2000))
+    message("点击【好友林】区域：" + click(250, 1800))
     sleep(5000)
     if (!text("农场好友林").exists()) {
         message("再次点击【好友林】区域：" + click(250, 2000))
@@ -198,7 +201,15 @@ function readTask(t) {
         } else {
             message("滑动并等待15s")
             swipe(510, 1000, 500, 500, 2000)
-            sleep(16000)
+            sleep(2000)
+            swipe(510, 1000, 500, 500, 2000)
+            sleep(2000)
+            swipe(510, 1000, 500, 500, 2000)
+            sleep(2000)
+            swipe(510, 1000, 500, 500, 2000)
+            sleep(2000)
+            swipe(510, 1000, 500, 500, 2000)
+            sleep(2000)
         }
         goBack();
         sleep(1000);
@@ -209,26 +220,17 @@ function readTask(t) {
 }
 function manureTask() {
     message("查找【施肥】循环任务");
-    if (text("丰收礼包已领取").exists()) {
-        message("点击【关闭弹窗】区域：" + click(500, 1719))
+    textConditionClickText("果树升级啦", "好的")
+    textConditionClickText("立即领奖", "立即领奖", "立即领取")
+    textConditionClickText("开心收下", "开心收下")
+    if (textStartsWith("选择任一礼物").findOnce()) {
         sleep(3000)
-    }
-    if (text("果树升级啦").exists()) {
-        text("好的").click()
-        sleep(3000)
-    }
-    if (text("立即领奖").exists()) {
-        text("立即领奖").click()
-        sleep(4000)
-        textClick("立即领取")
+        message("点击【选择礼物】区域：" + click(700, 1450))
         sleep(4000)
     }
-    if (text("开心收下").exists()) {
-        sleep(3000)
-        textClick("开心收下", "nowait")
-        sleep(4000)
-    }
-    message("点击【关闭弹窗】区域：" + click(508, 1875))
+    textConditionClickText("我知道了", "我知道了")
+    textConditionClickText("立即领取", "立即领取")
+    // message("点击【关闭弹窗】区域：" + click(508, 1875))
 
     let btn = textStartsWith("还差").findOnce()
     if (!btn) {
@@ -243,14 +245,14 @@ function taobaoManureTask() {
     let noTask = 0;
 
     var task = function () {
-        message("点击【是否施肥】区域：" + click(500, 1600))
+        message("点击【是否施肥】区域：" + click(500, 1500))
         sleep(1500)
 
         if (text("礼包内含无门槛红包和超多肥料").exists()) {
             noTask = 0;
             message("点击【关闭弹窗】区域：" + click(500, 1719))
             sleep(2000)
-            message("点击【施肥】区域：" + click(500, 1995))
+            message("点击【施肥】区域：" + click(500, 1800))
             sleep(3000)
             if (text("立即领取").exists()) {
                 message("点击【关闭立即领取弹窗】区域：" + click(500, 1719))
@@ -318,6 +320,7 @@ function textClick(t, type, isArea) {
         }
     } else {
         message("点击【" + t + "】：" + text(t).click())
+        sleep(3000)
     }
 }
 
@@ -352,4 +355,19 @@ function goBack() {
     message("返回")
 }
 
+function textConditionClickText(condition) {
+    let btntextArr = [].slice.call(arguments, 1)
+    if (text(condition).exists()) {
+        sleep(3000)
+        if (btntextArr.length) {
+            for (let btntext of btntextArr) {
+                textClick(btntext, "nowait")
+                sleep(4000)
+            }
+        } else {
+            textClick(condition, "nowait")
+            sleep(4000)
+        }
+    }
+}
 
