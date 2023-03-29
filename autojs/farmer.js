@@ -1,34 +1,31 @@
 auto("fast");
-setScreenMetrics(1080, 1920);
+setScreenMetrics(1081, 2400);
 message('开始执行');
-// launchApp("支付宝");
-// textClick("芭芭农场", "wait", "area")
-// sleep(6000)
-// if (!textStartsWith("芭芭农场").findOnce()) {
-//     sleep(6000)
-// }
-// zhifubaoManure()
+launchApp("支付宝");
+textClick("芭芭农场", "wait", "area")
+sleep(6000)
+if (!textStartsWith("芭芭农场").findOnce()) {
+    sleep(6000)
+}
+zhifubaoManure()
 // manureTask()
-taobaoManure()
+// taobaoManure()
+// taobaoManureTask()
+// rabbitTask()
 // feedChickens()
 // taobaoManureTask()
 message("脚本执行结束！")
 
+
 function zhifubaoManure() {
     textClick("开心收下", "nowait")
-    sleep(3000)
     // 施肥
-    message("点击领取肥料区域：" + click(800, 1400))
-    sleep(3000)
+    locationClick(900, 1480, "点击领取肥料区域：")
     if (text("去领更多肥料").exists()) {
-        message("点击【关闭弹窗】区域：" + click(500, 1821))
+        locationClick(500, 1821, "点击【关闭弹窗】区域：")
     }
-    sleep(3000)
     manureTask()
-    sleep(3000)
     textClick("任务列表", "wait")
-    sleep(4000)
-
     if (text("去喂鸡").exists()) {
         textClick("去喂鸡", "nowait")
         sleep(5000)
@@ -51,6 +48,7 @@ function zhifubaoManure() {
 
     swipe(510, 1900, 500, 1000, 1000)
     sleep(1000)
+    clickTextRightBtn("逛淘宝芭芭农场领3000肥料")
     clickTextRightBtn("逛淘宝芭芭农场领900肥料")
     sleep(10000)
     if (text("继续赚肥料").exists()) {
@@ -66,10 +64,9 @@ function zhifubaoManure() {
     }
 }
 function taobaoManure() {
-    textClick("继续努力")
-    sleep(1500)
-    textClick("立即领取")
-    textConditionClickText("退出比赛", "退出比赛")
+    textConditionClickText("继续努力")
+    textConditionClickText("立即领取")
+    textConditionClickText("退出比赛")
     if (textStartsWith("合种亲密度").findOnce()) {
         textClick("立即领取")
         sleep(2000)
@@ -79,7 +76,6 @@ function taobaoManure() {
     }
 
     textClick("点击领取")
-    sleep(2000)
     if (text("逛逛支付宝芭芭农场，立得肥料").exists()) {
         message("点击去支付宝区域：" + click(500, 1680))
         sleep(3000)
@@ -90,17 +86,13 @@ function taobaoManure() {
     // textConditionClickText("跟着小手去翻土")
     rabbitTask()
     friendsTree()
-    
-    message("点击【点击领取】肥料区域：" + click(887, 1450))
-    sleep(1000)
-    if (text("明日7点可领").exists()) {
-        text("关闭").click()
-        sleep(1000)
-    }
+    locationClick(887, 1450, "点击【点击领取】肥料区域：")
+
+    textConditionClickText("明日7点可领", "关闭")
+
     taobaoManureTask()
 
-    message("点击集肥料区域：" + click(800, 1900))
-    sleep(3000)
+    locationClick(800, 1900, "点击集肥料区域：")
 
     textClick("去签到")
     textClick("去领取");
@@ -131,7 +123,8 @@ function treePower() {
     click(890, 720)
 }
 function rabbitTask() {
-    message("点击领取兔子肥料区域：" + click(194, 1500))
+    locationClick(194, 1580, "点击领取兔子肥料区域：")
+    textConditionClickText("关闭")
 }
 function friendsTree() {
     message("点击【好友林】区域：" + click(250, 1800))
@@ -230,6 +223,8 @@ function manureTask() {
     }
     textConditionClickText("我知道了", "我知道了")
     textConditionClickText("立即领取", "立即领取")
+    textConditionClickText("关闭")
+    textConditionClickText("继续努力")
     // message("点击【关闭弹窗】区域：" + click(508, 1875))
 
     let btn = textStartsWith("还差").findOnce()
@@ -245,23 +240,11 @@ function taobaoManureTask() {
     let noTask = 0;
 
     var task = function () {
-        message("点击【是否施肥】区域：" + click(500, 1500))
-        sleep(1500)
-
+        locationClick(500, 1500, "点击【是否施肥】区域：")
         if (text("礼包内含无门槛红包和超多肥料").exists()) {
             noTask = 0;
-            message("点击【关闭弹窗】区域：" + click(500, 1719))
-            sleep(2000)
-            message("点击【施肥】区域：" + click(500, 1800))
-            sleep(3000)
-            if (text("立即领取").exists()) {
-                message("点击【关闭立即领取弹窗】区域：" + click(500, 1719))
-                sleep(2000)
-            }
-            if (text("下单提取").exists()) {
-                message("点击【关闭下单提取弹窗】区域：" + click(500, 1800))
-                sleep(2000)
-            }
+            textConditionClickText("关闭")
+            manureTimes()
             task()
         } else {
             // 有可能领到了礼包并且自动关闭了，两次再定性为没有施肥任务
@@ -274,6 +257,13 @@ function taobaoManureTask() {
             }
             message("没有【施肥】任务了！")
             sleep(3000)
+        }
+    }
+    var manureTimes = function () {
+        for (let i = 0; i <= 5; i++) {
+            locationClick(500, 1800, "点击【施肥】区域：")
+            textConditionClickText("立即领取", "关闭")
+            textConditionClickText("下单提取", "关闭")
         }
     }
     task()
@@ -317,11 +307,16 @@ function textClick(t, type, isArea) {
                 sleep(1000)
                 message("点击【" + t + "】区域：" + click(x, y) + x + y)
             });
+            sleep(3000)
         }
     } else {
         message("点击【" + t + "】：" + text(t).click())
         sleep(3000)
     }
+}
+function locationClick(x, y, msg) {
+    message((msg ? msg : `x:${x},y:${y}`) + click(x, y))
+    sleep(3000)
 }
 
 function clickTextRightBtn(t) {
@@ -354,7 +349,7 @@ function goBack() {
     // swipe(10, 1300, 250, 1300, 500)
     message("返回")
 }
-
+// condition文字存在，就点击该文字，如果后续有多个传入，则依次点击后续文字区域
 function textConditionClickText(condition) {
     let btntextArr = [].slice.call(arguments, 1)
     if (text(condition).exists()) {
