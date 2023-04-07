@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自适应形状</title>
+    <style>
+        /*1.第一种方式是利用 vw 来实现*/
+        .square {
+            width: 10%;
+            height: 10vw;
+            background: tomato;
+        }
+
+        /*2.第二种方式是利用元素的 margin/padding 百分比是相对父元素 width 的性质来实现*/
+        .square {
+            width: 20%;
+            height: 0;
+            padding-top: 20%;
+            background: orange;
+        }
+
+        /*3.第三种方式是利用子元素的 margin-top 的值来实现的*/
+        .square {
+            width: 30%;
+            overflow: hidden;
+            background: yellow;
+        }
+
+        .square::after {
+            content: "";
+            display: block;
+            margin-top: 100%;
+        }
+
+        /*三角形的实现原理是利用了元素边框连接处的等分原理。*/
+        .triangle {
+            width: 0;
+            height: 0;
+            border-width: 100px;
+            border-style: solid;
+            border-color: tomato transparent transparent transparent;
+        }
+
+        .box {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+            width: 10%;
+            height: 0;
+            padding-top: 20%;
+            /* 因为padding的百分比是相对于父元素的宽 */
+            background: tomato;
+        }
+    </style>
+</head>
+
+<body>
+    正方形
+    <div class="square"></div>
+    三角形
+    <div class="triangle"></div>
+    <div class="box"></div>
+
+</body>
+
+</html>
