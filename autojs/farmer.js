@@ -41,7 +41,7 @@ var utils = {
             utils.message(`没有【${t}】了！`)
             return false
         }
-        let y = btn.bounds().top
+        let y = btn.bounds().bottom
         let x = 950;
         utils.message("点击【" + t + "】右侧按钮：" + click(x, y));
         sleep(1000);
@@ -119,7 +119,8 @@ var task = {
         } else {
             return;
         }
-        // TODO：点击两边小鸡有问题，领取也有问题
+        utils.locationClick(500, 1650, "可能有弹窗，关闭一下")
+
         utils.message("点击【喂饲料】区域：" + click(950, 2180));
         sleep(2000)
         if (text("找小鸡").exists()) {
@@ -127,6 +128,7 @@ var task = {
             sleep(5000)
             utils.message("点击【两边小鸡】区域：" + click(450, 1500) + click(750, 1500))
             sleep(5000)
+            utils.textConditionClickText("确认")// 工作需要确认
             utils.message("点击【喂饲料】区域：" + click(950, 2180));
             sleep(5000)
         }
@@ -147,7 +149,7 @@ var task = {
         utils.outBack("蚂蚁庄园")
     },
     treePower: function () {
-        utils.clickTextRightBtn("去森林收自己能量/给好友浇水")
+        utils.clickTextRightBtn("逛一逛蚂蚁森林")
         sleep(5000)
         if (text("蚂蚁森林").exists()) {
             utils.message("点击【收能量】区域：")
@@ -245,9 +247,9 @@ var task = {
         let noTask = 0;
         var main = function () {
             utils.locationClick(500, 1500, "点击【是否施肥】区域：")
-            if (text("礼包内含无门槛红包和超多肥料").exists()) {
+            if (text("开心收下").exists()) {
                 noTask = 0;
-                utils.textConditionClickText("关闭")
+                utils.textConditionClickText("开心收下")
                 manureTimes()
                 main()
             } else {
@@ -286,15 +288,9 @@ var task = {
     }
 }
 
-auto("fast");
-setScreenMetrics(1081, 2400);
-utils.message('开始执行');
-launchApp("支付宝");
-utils.textClick("芭芭农场", "wait", "area")
-sleep(6000)
-if (!textStartsWith("芭芭农场").findOnce()) {
-    sleep(6000)
-}
+
+init()
+openzhifubao()
 zhifubaoManure()
 toTaobao()
 taobaoManure()
@@ -304,14 +300,29 @@ taobaoManure()
 // task.rabbitTask()
 // task.feedChickens()
 // task.taobaoManureTask()
+// task.treePower()
 utils.message("脚本执行结束！")
 
+function init() {
+    auto("fast");
+    setScreenMetrics(1081, 2400);
+    utils.message('开始执行');
+}
+function openzhifubao() {
+    launchApp("支付宝");
+    utils.textClick("芭芭农场", "wait", "area")
+    sleep(6000)
+    if (!textStartsWith("芭芭农场").findOnce()) {
+        sleep(6000)
+    }
+}
 function zhifubaoManure() {
     utils.textConditionClickText("开心收下");
-    // 施肥
-    utils.locationClick(900, 1480, "点击领取肥料区域：")
+    utils.textConditionClickText("领取")
+    utils.locationClick(960, 1650, "点击领取肥料区域：")
     utils.textConditionClickLocation("去领更多肥料", 500, 1821, "点击【关闭弹窗】区域：")
 
+    // 施肥
     task.manureTask()
     utils.textClick("任务列表", "wait")
     task.feedChickens()
@@ -343,7 +354,7 @@ function taobaoManure() {
     if (textStartsWith("合种亲密度").findOnce()) {
         utils.textClick("立即领取")
         sleep(2000)
-        // utils.textClick("立即领取")
+        utils.textClick("立即领取")
         utils.goBack()
         sleep(2000)
     }
