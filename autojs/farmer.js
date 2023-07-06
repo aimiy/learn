@@ -126,7 +126,7 @@ var task = {
         if (text("找小鸡").exists()) {
             utils.textClick("找小鸡")
             sleep(5000)
-            utils.message("点击【两边小鸡】区域：" + click(450, 1500) + click(750, 1500))
+            utils.message("点击【两边小鸡】区域：" + click(382, 1500) + click(870, 1500))
             sleep(5000)
             utils.textConditionClickText("确认")// 工作需要确认
             utils.message("点击【喂饲料】区域：" + click(950, 2180));
@@ -252,6 +252,11 @@ var task = {
                 utils.textConditionClickText("开心收下")
                 manureTimes()
                 main()
+            } else if (text("礼包内含无门槛红包和超多肥料").exists()) {
+                noTask = 0;
+                utils.textConditionClickText("关闭")
+                manureTimes()
+                main()
             } else {
                 // 有可能领到了礼包并且自动关闭了，两次再定性为没有施肥任务
                 noTask += 1;
@@ -268,6 +273,7 @@ var task = {
         var manureTimes = function () {
             for (let i = 0; i <= 5; i++) {
                 utils.locationClick(500, 1800, "点击【施肥】区域：")
+                // 施肥的时候会弹出一些窗口
                 utils.textConditionClickText("立即领取", "关闭")
                 utils.textConditionClickText("下单提取", "关闭")
             }
@@ -290,9 +296,9 @@ var task = {
 
 
 init()
-openzhifubao()
-zhifubaoManure()
-toTaobao()
+// openzhifubao()
+// zhifubaoManure()
+// toTaobao()
 taobaoManure()
 
 // task.manureTask()
@@ -325,6 +331,7 @@ function zhifubaoManure() {
     // 施肥
     task.manureTask()
     utils.textClick("任务列表", "wait")
+    utils.textClick("领取")
     task.feedChickens()
     swipe(510, 1900, 500, 1000, 1000)
     sleep(2000)
@@ -351,6 +358,8 @@ function taobaoManure() {
     utils.textConditionClickText("继续努力")
     utils.textConditionClickText("立即领取")
     utils.textConditionClickText("退出比赛")
+    utils.textConditionClickText("投入肥料")
+    utils.textConditionClickText("我知道了")
     if (textStartsWith("合种亲密度").findOnce()) {
         utils.textClick("立即领取")
         sleep(2000)
