@@ -235,10 +235,10 @@ var task = {
 }
 
 
-init()
-// openzhifubao()
-// zhifubaoManure()
-// toTaobao()
+utils.init()
+openzhifubao()
+zhifubaoManure()
+toTaobao()
 taobaoManure()
 
 // task.manureTask()
@@ -249,11 +249,6 @@ taobaoManure()
 // task.treePower()
 utils.message("脚本执行结束！")
 
-function init() {
-    auto("fast");
-    setScreenMetrics(1081, 2400);
-    utils.message('开始执行');
-}
 function openzhifubao() {
     launchApp("支付宝");
     utils.textClick("芭芭农场", "wait", "area")

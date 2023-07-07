@@ -1,5 +1,10 @@
 // 全局函数
 var utils = {
+    init: function () {
+        auto("fast");
+        setScreenMetrics(1081, 2400);
+        utils.message('开始执行');
+    },
     textClick: function (t, type, isArea) {
         if (!text(t).exists()) {
             if (type == "wait") {
