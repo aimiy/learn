@@ -1,97 +1,11 @@
-// 全局函数
-var utils = {
-    textClick: function (t, type, isArea) {
-        if (!text(t).exists()) {
-            if (type == "wait") {
-                utils.message("等待【" + t + "】")
-                text(t).waitFor()
-            }
-            sleep(3000)
-        }
-        if (!text(t).exists()) {
-            utils.message("没有【" + t + "】按钮")
-            return;
-        }
-        if (isArea == "area") {
-            let btn = text(t).find();
-            if (btn.empty()) {
-                utils.message("没找到╭(╯^╰)╮" + t);
-            } else {
-                utils.message("找到" + btn + "集合");
-                btn.forEach(function (item) {
-                    let x = item.bounds().centerX()
-                    let y = item.bounds().centerY()
-                    sleep(1000)
-                    utils.message("点击【" + t + "】区域：" + click(x, y) + x + y)
-                });
-                sleep(3000)
-            }
-        } else {
-            utils.message("点击【" + t + "】：" + text(t).click())
-            sleep(3000)
-        }
-    },
-    locationClick: function (x, y, msg) {
-        utils.message((msg ? msg : `x:${x},y:${y}`) + click(x, y))
-        sleep(3000)
-    },
-    clickTextRightBtn: function (t) {
-        let btn = textStartsWith(t).findOnce()
-        if (!btn) {
-            utils.message(`没有【${t}】了！`)
-            return false
-        }
-        let y = btn.bounds().bottom
-        let x = 950;
-        utils.message("点击【" + t + "】右侧按钮：" + click(x, y));
-        sleep(1000);
-        return true
-    },
-    message: function (t) {
-        console.log(t)
-        toast(t)
-    },
-    outBack: function (appName) {
-        if (text(appName).exists()) {
-            utils.goBack()
-            sleep(3000)
-            utils.outBack(appName)
-        } else {
-            utils.message("离开" + appName)
-        }
-    },
-    goBack: function () {
-        back()
-        // swipe(10, 1300, 250, 1300, 500)
-        utils.message("返回")
-    },
-    // condition文字存在，就点击该文字，如果后续有多个传入，则只依次点击后续文字区域
-    textConditionClickText: function (condition) {
-        let btntextArr = [].slice.call(arguments, 1)
-        if (text(condition).exists()) {
-            if (btntextArr.length) {
-                for (let btntext of btntextArr) {
-                    utils.textClick(btntext, "nowait")
-                }
-            } else {
-                utils.textClick(condition, "nowait")
-
-            }
-        }
-    },
-    textConditionClickLocation: function (condition, x, y, tip) {
-        if (text(condition).exists()) {
-            utils.locationClick(x, y, tip)
-        }
-    }
-}
+var utils = require("./utils.js");
 // 一些细分的任务
 var task = {
     manureTask: function () {
         utils.message("查找【施肥】循环任务");
         utils.textConditionClickText("果树升级啦", "好的")
         utils.textConditionClickText("立即领奖", "立即领奖", "立即领取")
-        utils.textConditionClickText("开心收下", "开心收下")
+        utils.textConditionClickText("开心收下")
         if (textStartsWith("选择任一礼物").findOnce()) {
             sleep(3000)
             utils.message("点击【选择礼物】区域：" + click(700, 1450))
@@ -101,7 +15,6 @@ var task = {
         utils.textConditionClickText("立即领取", "立即领取")
         utils.textConditionClickText("关闭")
         utils.textConditionClickText("继续努力")
-        // utils.message("点击【关闭弹窗】区域：" + click(508, 1875))
 
         let btn = textStartsWith("还差").findOnce()
         if (!btn) {
@@ -119,7 +32,30 @@ var task = {
         } else {
             return;
         }
-        utils.locationClick(500, 1650, "可能有弹窗，关闭一下")
+
+        if (text("小鸡肥料厂").exists()) {
+            if (text("+雇小鸡产肥").exists()) {
+                utils.textClick("+雇小鸡产肥", "nowait")
+                sleep(2000)
+                if (text("确认雇佣").exists()) {
+                    utils.textClick("确认雇佣", "nowait")
+                } else {
+                    if (text("可雇").exists()) {
+                        utils.textClick("可雇", "nowait")
+                        sleep(2000)
+                        utils.locationClick(580, 2200, "雇佣")
+                        sleep(2000)
+                        if (text("确认雇佣").exists()) {
+                            utils.textClick("确认雇佣", "nowait")
+                        }
+                    }
+                }
+            } else {
+                utils.locationClick(950, 750, "关闭肥料厂")
+            }
+        }
+
+        // utils.locationClick(500, 1650, "可能有弹窗，关闭一下")
 
         utils.message("点击【喂饲料】区域：" + click(950, 2180));
         sleep(2000)
@@ -134,7 +70,8 @@ var task = {
         }
 
         utils.message("点击【领饲料】区域：" + click(250, 2180));
-        sleep(5000);
+        sleep(3000);
+        
         utils.textClick("领取");
         sleep(2000)
         swipe(510, 1900, 500, 1000, 1000)
@@ -181,6 +118,9 @@ var task = {
         } else {
             return;
         }
+    },
+    wishGift: function () {
+        utils.textConditionClickText("今日领取有效", "领取")
     },
     rabbitTask: function () {
         utils.locationClick(194, 1580, "点击领取兔子肥料区域：")
@@ -330,6 +270,7 @@ function zhifubaoManure() {
 
     // 施肥
     task.manureTask()
+    task.wishGift()
     utils.textClick("任务列表", "wait")
     utils.textClick("领取")
     task.feedChickens()
@@ -375,15 +316,14 @@ function taobaoManure() {
         launchApp("淘宝");
         sleep(5000)
     }
-    // utils.textConditionClickText("翻土拿奖励")
-    // utils.textConditionClickText("跟着小手去翻土")
+    
     task.rabbitTask()
-    task.friendsTree()
+    // task.friendsTree()
     utils.locationClick(887, 1450, "点击【点击领取】肥料区域：")
 
     utils.textConditionClickText("明日7点可领", "关闭")
 
-    task.taobaoManureTask()
+    // task.taobaoManureTask()
 
     utils.locationClick(800, 1900, "点击集肥料区域：")
 
