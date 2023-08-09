@@ -71,7 +71,7 @@ var task = {
 
         utils.message("点击【领饲料】区域：" + click(250, 2180));
         sleep(3000);
-        
+
         utils.textClick("领取");
         sleep(2000)
         swipe(510, 1900, 500, 1000, 1000)
@@ -153,8 +153,12 @@ var task = {
         utils.goBack()
         sleep(3000)
     },
-    readTask: function (t) {
-        utils.message("查找【" + t + "】循环任务");
+    readTask: function (t, maxTimes) {
+        if (maxTimes > 0) {
+            utils.message("查找【" + t + "】循环任务" + maxTimes);
+        } else {
+            return;
+        }
         let res = utils.clickTextRightBtn(t);
         if (res) {
             sleep(2000)
@@ -178,7 +182,7 @@ var task = {
             }
             utils.goBack();
             sleep(1000);
-            task.readTask(t);
+            task.readTask(t, (maxTimes - 1));
         } else {
             return;
         }
@@ -222,6 +226,7 @@ var task = {
     },
     answerQuestion: function () {
         utils.message("查找答题")
+        sleep(1000)
         if (text("去答题").exists()) {
             utils.textClick("去答题", "wait")
             sleep(2000)
@@ -234,19 +239,11 @@ var task = {
     }
 }
 
-
 utils.init()
 openzhifubao()
 zhifubaoManure()
 toTaobao()
 taobaoManure()
-
-// task.manureTask()
-// task.taobaoManureTask()
-// task.rabbitTask()
-// task.feedChickens()
-// task.taobaoManureTask()
-// task.treePower()
 utils.message("脚本执行结束！")
 
 function openzhifubao() {
@@ -268,16 +265,21 @@ function zhifubaoManure() {
     task.wishGift()
     utils.textClick("任务列表", "wait")
     utils.textClick("领取")
+    task.readTask("浏览15秒得", 1);
+    task.readTask("逛15s得", 1);
     task.feedChickens()
     swipe(510, 1900, 500, 1000, 1000)
+    swipe(510, 1900, 500, 1000, 1000)
     sleep(2000)
+    task.readTask("浏览15秒助农", 1);
+    task.readTask("逛逛即可获得", 1);
+    task.readTask("浏览即可获得", 1);
+    task.readTask("逛一逛即可得", 1);
     task.treePower()
 
     utils.textClick("领取")
 }
 function toTaobao() {
-    swipe(510, 1900, 500, 1000, 1000)
-    sleep(1000)
     utils.clickTextRightBtn("逛淘宝芭芭农场领3000肥料")
     utils.clickTextRightBtn("逛淘宝芭芭农场领900肥料")
     sleep(10000)
@@ -286,6 +288,8 @@ function toTaobao() {
         sleep(1000)
         click(1000, 600)
     } else {
+        swipe(510, 1900, 500, 1000, 1000)
+        sleep(1000)
         utils.textClick("前往手机淘宝-芭芭农场", "wait")
         sleep(6000)
     }
@@ -311,20 +315,20 @@ function taobaoManure() {
         launchApp("淘宝");
         sleep(5000)
     }
-    
+
     task.rabbitTask()
-    // task.friendsTree()
     utils.locationClick(887, 1450, "点击【点击领取】肥料区域：")
 
     utils.textConditionClickText("明日7点可领", "关闭")
 
-    // task.taobaoManureTask()
+    task.taobaoManureTask()
 
     utils.locationClick(800, 1900, "点击集肥料区域：")
 
     utils.textClick("去签到")
     utils.textClick("去领取");
-    task.readTask("浏览15秒得");
+    task.readTask("浏览15秒得", 13);
+    task.readTask("浏览15秒", 1);
     let btn = textStartsWith("逛逛支付宝芭芭农场").findOnce()
     if (btn) {
         utils.message("点击去支付宝：" + btn.click())
