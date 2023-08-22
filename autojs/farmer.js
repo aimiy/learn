@@ -244,6 +244,7 @@ openzhifubao()
 zhifubaoManure()
 toTaobao()
 taobaoManure()
+qiandao()
 utils.message("脚本执行结束！")
 
 function openzhifubao() {
@@ -265,7 +266,7 @@ function zhifubaoManure() {
     task.wishGift()
     utils.textClick("任务列表", "wait")
     utils.textClick("领取")
-    task.readTask("浏览15秒得", 1);
+    task.readTask("浏览15秒得", 3);
     task.readTask("逛15s得", 1);
     task.feedChickens()
     swipe(510, 1900, 500, 1000, 1000)
@@ -339,3 +340,10 @@ function taobaoManure() {
     task.answerQuestion()
 };
 
+function qiandao() {
+    launchApp("夸克");
+    sleep(2000)
+    utils.locationClick(310, 1250, "GLaDOS")
+    sleep(5000)
+    utils.locationClick(100, 860, "签到")
+}
