@@ -1,8 +1,8 @@
 var utils = require("utils.js");
 utils.init()
 
-utils.locationClick(400, 950, "打开分类")
-utils.locationClick(400, 500, "美食分类")
+// utils.locationClick(400, 950, "打开分类")
+// utils.locationClick(400, 500, "美食分类")
 utils.textClick("200元以上套餐")
 sleep(500)
 var num = 0;

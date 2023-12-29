@@ -17,8 +17,12 @@
   },
   "homepage": "https://github.com/aimiy/learn#readme",
   "devDependencies": {
+    "@types/node": "^20.1.2",
     "gulp": "^4.0.2",
     "gulp-connect": "^5.7.0",
     "gulp-livereload": "^4.0.2"
+  },
+  "dependencies": {
+    "koa": "^2.14.2"
   }
 }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue</title>
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        // function Vue(options) {
+        //     var vm = this;
+        //     if (options.methods) {
+        //         initMethods(vm, options.methods);
+        //     }
+        //     if (options.data) {
+        //         initData(vm, options.data);
+        //     }
+        // }
+        // function initMethods(vm, methods) {
+        //     for (let key in methods) {
+        //         vm[key] = methods[key].bind(vm)
+        //     }
+        // }
+        // var sharedPropertyDefinition = {
+        //     enumerable: true,
+        //     configurable: true,
+        //     get: function () { },
+        //     set: function () { }
+        // };
+        // function proxy(target, sourceKey, key) {
+        //     sharedPropertyDefinition.get = function proxyGetter() {
+        //         return this[sourceKey][key]
+        //     };
+        //     sharedPropertyDefinition.set = function proxySetter(val) {
+        //         this[sourceKey][key] = val;
+        //     };
+        //     Object.defineProperty(target, key, sharedPropertyDefinition);
+        // }
+        // function initData(vm, data) {
+        //     vm._data = data;
+        //     for (let key in data) {
+        //         proxy(vm, '_data', key)
+        //     }
+        // }
+    </script>
+    <script>
+        // const vm = new Vue({
+        //     data: {
+        //         name: 'test',
+        //     },
+        //     methods: {
+        //         sayName() {
+        //             return this.name;
+        //         }
+        //     },
+        // });
+        // console.log(vm.name);
+        // console.log(vm.sayName());
+    </script>
+
+    <script>
+        vm = {}
+        vm.Vue = Vue
+        vm.Vue({
+            data: {
+                name: 'test',
+            },
+            methods: {
+                sayName() {
+                    return this.name;
+                }
+            },
+        })
+        console.log(vm.name)
+        console.log(vm.sayName())
+
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

@@ -5,15 +5,16 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/', component: resolve => require(['@/components/homeView'], resolve), children: [
-            { path: "/home", component: resolve => require(['@/views/home/home'], resolve),meta:{keepAlive:true} },
+            { path: "/home", component: resolve => require(['@/views/home/home'], resolve), meta: { keepAlive: true } },
             { path: "/homeDetail", component: resolve => require(['@/views/home/homeDetail'], resolve) },
-            { path: "/home2", component: resolve => require(['@/views/home/home2'], resolve),meta:{keepAlive:true} },
+            { path: "/home2", component: resolve => require(['@/views/home/home2'], resolve), meta: { keepAlive: true } },
             { path: "/homeDetail2", component: resolve => require(['@/views/home/homeDetail2'], resolve) },
         ]
     },
     {
-        path:'/maequee',component:resolve => require(['@/views/marquee'],resolve)
-    }
+        path: '/maequee', component: resolve => require(['@/views/marquee'], resolve)
+    },
+    { path: "/dialog", component: resolve => require(['@/views/dialog/index.vue'], resolve) },
 ]
 const router = new VueRouter({
     routes
