@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            letter-spacing: normal;
+            font-weight: normal;
+        }
+
+        :lang(ja) {
+            font-family: 'Yu Gothic', sans-serif;
+            letter-spacing: 0.05em;
+            font-weight: bold;
+        }
+
+        :lang(en) {
+            font-family: 'Arial', sans-serif;
+            letter-spacing: normal;
+            font-weight: normal;
+        }
+    </style>
+</head>
+
+<body>
+    aaaaaaaaaa
+    12324124124
+    汉字汉字
+    の
+</body>
+<script>
+    setTimeout(() => {
+        let lang = "ja"
+        document.documentElement.lang = lang
+        console.log(document.documentElement.lang)
+    }, 500)
+</script>
+
+</html>
