@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        video {
+            max-width: 100%;
+        }
+
+        img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    源视频：
+    <video src="" id="sourceVideo"></video>
+    <br>
+    <input type="file" id="fileInput" accept="video/*">
+    <br>
+    海报图：
+    <img id="posterImg"></img>
+    <br>
+    截取视频：
+    <video src="" id="clippedVideo"></video>
+    <script>
+        class VideoPlayer {
+            constructor(videoElement, file, onLoadedCallback = null, onErrorCallback = null) {
+                this.file = file;
+                this.videoElement = document.getElementById(videoElement);
+                if (!this.videoElement) {
+                    throw new Error('Video element not found');
+                }
+                this.onLoadedCallback = onLoadedCallback;
+                this.onErrorCallback = onErrorCallback;
+                this.initVideoElement();
+
+                this.timer = null;
+            }
+            initVideoElement() {
+                const url = URL.createObjectURL(this.file);
+                this.videoElement.src = url;
+                this.videoElement.autoplay = true;
+                this.videoElement.muted = true;
+                const onLoadedMetadata = () => {
+                    this.duration = this.videoElement.duration;
+                    let width = this.videoElement.videoWidth;
+                    let height = this.videoElement.videoHeight;
+
+                    if (typeof this.onLoadedCallback === 'function') {
+                        this.onLoadedCallback({ duration: this.duration, url: url });
+                        this.videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                        this.videoElement.removeEventListener('error', onError);
+                    }
+                }
+                const onError = (event) => {
+                    this.onErrorCallback && this.onErrorCallback(event.target.error);
+                    this.videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                    this.videoElement.removeEventListener('error', onError);
+                };
+
+                this.videoElement.addEventListener('loadedmetadata', onLoadedMetadata);
+                this.videoElement.addEventListener('error', onError);
+            }
+            playForDuration(startTime, duration) {
+                return new Promise((resolve, reject) => {
+                    if (this.videoElement) {
+                        this.videoElement.currentTime = startTime;
+                        this.videoElement.onended = resolve;
+                        this.videoElement.onerror = reject;
+                        this.videoElement.play();
+
+                        if (this.timer) clearTimeout(this.timer);
+
+                        this.timer = setTimeout(() => {
+                            if (!this.videoElement.paused) {
+                                this.videoElement.pause();
+                                resolve();
+                            }
+                        }, duration * 1000);
+                    } else {
+                        reject(new Error('Video element not initialized yet.'));
+                    }
+                });
+            }
+            pause() {
+                if (this.videoElement) {
+                    this.videoElement.pause();
+                }
+            }
+            play() {
+                if (this.videoElement) {
+                    this.videoElement.play();
+                }
+            }
+            setStartTime(startTime) {
+                this.videoElement.currentTime = startTime;
+            }
+
+            async clipVideo(startTime, endTime) {
+                if (!this.videoElement || !this.videoElement.src) {
+                    console.error('Video element not ready or source not set.');
+                    return;
+                }
+
+                // 确保startTime和endTime有效
+                startTime = Math.max(0, Math.min(startTime, this.duration));
+                endTime = Math.max(startTime, Math.min(endTime, this.duration));
+
+                // 创建MediaRecorder实例
+                const recordedChunks = [];
+                const mimeType = MediaRecorder.isTypeSupported('video/mp4;codecs=vp9')
+                    ? 'video/mp4;codecs=vp9'
+                    : 'video/mp4;codecs=vp8';
+
+                const mediaRecorder = new MediaRecorder(this.videoElement.captureStream(), { mimeType });
+
+
+                // 数据可用时收集
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                // 录制结束处理
+                mediaRecorder.onstop = async () => {
+                    // 将Blob片段合并成单个Blob
+                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    const url = URL.createObjectURL(blob);
+
+                    // 可以预览或下载剪辑的视频
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'clipped_video.mp4';
+                    a.click();
+
+                    // 清理
+                    URL.revokeObjectURL(url);
+                    resolve(url);
+                };
+
+                // 跳转到开始时间并开始录制
+                this.videoElement.currentTime = startTime;
+                // await new Promise(resolve => setTimeout(resolve, 600));
+                // await new Promise(resolve => requestAnimationFrame(resolve));
+                this.videoElement.play();
+                mediaRecorder.start();
+
+                // 在设定的结束时间停止录制
+                await new Promise((resolve) => {
+                    setTimeout(() => {
+                        mediaRecorder.stop();
+                        resolve();
+                    }, (endTime - startTime) * 1000);
+                });
+            }
+            async clipPoster(currentTime) {
+                this.videoElement.pause();
+                if (currentTime) {
+                    this.videoElement.currentTime = currentTime;
+                }
+                await new Promise(resolve => setTimeout(resolve, 600));
+                await new Promise(resolve => requestAnimationFrame(resolve));
+                const canvas = document.createElement('canvas');
+                canvas.width = this.videoElement.videoWidth;
+                canvas.height = this.videoElement.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
+                const posterDataUrl = canvas.toDataURL('image/jpeg');
+                return posterDataUrl;
+            }
+            setMuted(muted) {
+                this.videoElement.muted = muted;
+            }
+        }
+
+
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            const videoPlayer = new VideoPlayer("sourceVideo", file, () => {
+                videoPlayer.clipPoster(0).then(posterDataUrl => {
+                    const posterImg = document.getElementById('posterImg');
+                    posterImg.src = posterDataUrl;
+                });
+
+                videoPlayer.clipVideo(5, 15).then(clippedVideoUrl => {
+                    const clippedVideo = document.getElementById('clippedVideo');
+                    clippedVideo.src = clippedVideoUrl;
+                })
+            })
+
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ffmpeg</title>
+</head>
+
+<body>
+    videosrc
+    <input type="file" id="file" />
+    <br/>
+    不传的话默认下面的视频
+    <br/>
+    <video id="videosrc" controls width="200px" height="100px"
+        src="https://raw.githubusercontent.com/ffmpegwasm/testdata/master/Big_Buck_Bunny_180_10s.webm"></video>
+    <br/>
+    videoresult
+    <br/>
+    <button id="load">加载资源</button>
+    <button id="start">开始</button>
+    <br/>
+    <video src="" id="videoresult" controls width="200px" height="100px"></video>
+    <script lang="javascript" type="module">
+        import { FFmpeg } from '../node_modules/@ffmpeg/ffmpeg/dist/esm/index.js';
+        import { fetchFile } from '../node_modules/@ffmpeg/util/dist/esm/index.js';
+        const ffmpeg = new FFmpeg();
+
+        document.getElementById("file").addEventListener("change", (e) => {
+            console.log(e.target.files[0]);
+            document.getElementById('videosrc').src = URL.createObjectURL(e.target.files[0]);
+        })
+
+
+        const load = async () => {
+            ffmpeg.on('log', ({ message }) => {
+                console.log(message);
+            });
+
+            await ffmpeg.load({
+                // coreURL: await fetchFile("http://localhost:5500//node_modules/@ffmpeg/core/dist/umd/ffmpeg-core.js"),
+                // wasmURL: await fetchFile("http://localhost:5500//node_modules/@ffmpeg/core/dist/umd/ffmpeg-core.wasm"),
+                coreURL: "https://unpkg.com/@ffmpeg/core@0.12.9/dist/esm/ffmpeg-core.js",
+                // wasmURL: "https://temp.aifaceswap.io/aifaceswap/static/ffmpeg-core.wasm",
+            });
+        }
+
+
+        const transcode = async () => {
+            const videosrcurl = document.getElementById('videosrc').src;
+            await ffmpeg.writeFile('input.webm', await fetchFile(videosrcurl));
+            // await ffmpeg.exec([
+            //     '-i',
+            //     'input.webm',
+            //     '-f',
+            //     'segment',
+            //     '-segment_time',
+            //     '2',
+            //     '-g',
+            //     '9',
+            //     '-sc_threshold',
+            //     '0',
+            //     '-force_key_frames',
+            //     'expr:gte(t,n_forced*9)',
+            //     '-reset_timestamps',
+            //     '1',
+            //     '-map',
+            //     '0',
+            //     'output_%d.mp4'
+            // ]);
+            await ffmpeg.exec([
+                '-ss',
+                '00:00:00',
+                '-i',
+                'input.webm',
+                '-t',
+                '00:00:01',
+                '-c:v',
+                'copy',
+                'output.mp4'
+            ]);
+            // const data = await ffmpeg.readFile('output_1.mp4');
+            const data = await ffmpeg.readFile('output.mp4');
+            const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+            const videoresultdom = document.getElementById('videoresult');
+            videoresultdom.src = url;
+        }
+        document.getElementById('load').addEventListener('click', load);
+        document.getElementById('start').addEventListener('click', transcode);
+    </script>
+</body>
+
+</html>
