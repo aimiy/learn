@@ -11,6 +11,8 @@ const expensiveCalculation = (num) => {
 };
 
 function App() {
+  const [renderCount, setRenderCount] = useState(0);
+  const [renderTime, setRenderTime] = useState(0);
   const [count, setCount] = useState(0);
   const [num, setNum] = useState(42);
 
@@ -19,6 +21,14 @@ function App() {
 
   // 不使用缓存的计算
   const { result: nonMemoizedResult, time: nonMemoizedTime } = expensiveCalculation(num);
+  useEffect(() => {
+    const startTime = performance.now();
+    setRenderCount(prevCount => prevCount + 1);
+    return () => {
+      const endTime = performance.now();
+      setRenderTime(endTime - startTime);
+    };
+  });
 
   return (
     <div className="App">
@@ -39,6 +49,11 @@ function App() {
         <div>
           <p>Result: {nonMemoizedResult}</p>
           <p>Time without Memoization: {nonMemoizedTime.toFixed(2)} ms</p>
+        </div>
+        <h2>Rendering Info</h2>
+        <div>
+          <p>Render Count: {renderCount}</p>
+          <p>Render Time: {renderTime.toFixed(2)} ms</p>
         </div>
       </header>
     </div>
